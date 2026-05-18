@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app" id="app">
+        <div class="weather-bg" id="weatherBg"></div>
+
+        <header class="header">
+            <div class="search-container">
+                <div class="search-box">
+                    <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <input type="text" id="searchInput" placeholder="Search for a city..." autofocus>
+                    <button id="searchBtn" class="btn-search">Search</button>
+                </div>
+            </div>
+            <div class="controls">
+                <div class="lang-selector">
+                    <button class="lang-btn active" data-lang="en">EN</button>
+                    <button class="lang-btn" data-lang="pt">PT</button>
+                    <button class="lang-btn" data-lang="es">ES</button>
+                </div>
+                <div class="unit-toggle">
+                    <button class="unit-btn active" data-unit="C">°C</button>
+                    <button class="unit-btn" data-unit="F">°F</button>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div id="loading" class="loading hidden">
+                <div class="spinner"></div>
+                <p>Loading...</p>
+            </div>
+
+            <div id="error" class="error hidden"></div>
+
+            <div id="welcome" class="welcome">
+                <div class="welcome-icon">
+                    <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                </div>
+                <h2>Welcome to Weather App</h2>
+                <p>Search for a city to get started, or allow location access.</p>
+            </div>
+
+            <div id="weatherDisplay" class="weather-display hidden">
+                <div class="weather-primary">
+                    <div class="location">
+                        <h2 id="cityName">--</h2>
+                        <span id="country" class="country-badge">--</span>
+                    </div>
+                    <p id="weatherDesc" class="weather-desc">--</p>
+                    <div class="temp-main">
+                        <div id="weatherIcon" class="weather-icon"></div>
+                        <span id="temperature" class="temperature">--</span>
+                    </div>
+                    <div class="temp-range">
+                        <span>H: <span id="tempMax">--</span></span>
+                        <span>L: <span id="tempMin">--</span></span>
+                    </div>
+                </div>
+
+                <div class="weather-secondary">
+                    <div class="detail-card">
+                        <div class="detail-label" id="lblFeelsLike">Feels Like</div>
+                        <div class="detail-value"><span id="feelsLike">--</span></div>
+                    </div>
+                    <div class="detail-card">
+                        <div class="detail-label" id="lblHumidity">Humidity</div>
+                        <div class="detail-value"><span id="humidity">--</span>%</div>
+                    </div>
+                    <div class="detail-card">
+                        <div class="detail-label" id="lblWind">Wind</div>
+                        <div class="detail-value"><span id="wind">--</span> <span id="windUnit">m/s</span></div>
+                    </div>
+                    <div class="detail-card">
+                        <div class="detail-label" id="lblPressure">Pressure</div>
+                        <div class="detail-value"><span id="pressure">--</span> <span>hPa</span></div>
+                    </div>
+                    <div class="detail-card">
+                        <div class="detail-label" id="lblSunrise">Sunrise</div>
+                        <div class="detail-value"><span id="sunrise">--</span></div>
+                    </div>
+                    <div class="detail-card">
+                        <div class="detail-label" id="lblSunset">Sunset</div>
+                        <div class="detail-value"><span id="sunset">--</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="forecastDisplay" class="forecast-display hidden">
+                <h3 class="forecast-title" id="forecastTitle">5-Day Forecast</h3>
+                <div id="forecastContainer" class="forecast-container"></div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p><span id="footerPowered">Weather App</span></p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
