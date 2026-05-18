@@ -182,37 +182,34 @@ async function fetchWeather(city) {
     try {
         const overrideCountry = cityOverride[city.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')] || null;
 
-        const geocodeUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(city)}&format=json&limit=5`;
-        const geoResp = await fetch(geocodeUrl, {
-            headers: {
-                'Accept-Language': overrideCountry ? 'en' : state.lang === 'en' ? 'en' : state.lang === 'pt' ? 'pt' : 'es',
-                'User-Agent': 'WeatherApp/1.0',
-            },
-        });
+        const geoLang = overrideCountry ? 'en' : state.lang;
+        const geocodeUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=5&language=${geoLang}&format=json`;
+        const geoResp = await fetch(geocodeUrl);
         const geoData = await geoResp.json();
 
-        if (!geoData || geoData.length === 0) {
+        if (!geoData || !geoData.results || geoData.results.length === 0) {
             showError(i18n[state.lang].errorNotFound);
             showWelcome();
             return;
         }
 
-        let best = geoData[0];
+        let results = geoData.results;
+        let best = results[0];
 
         if (overrideCountry) {
-            const match = geoData.find(g => g.address && g.address.country_code && g.address.country_code.toUpperCase() === overrideCountry);
+            const match = results.find(r => r.country_code && r.country_code.toUpperCase() === overrideCountry);
             if (match) best = match;
-        } else if (geoData.length > 1) {
-            const preferred = geoData.find(g => g.address && g.address.country_code && (g.address.country_code.toUpperCase() === 'US' || g.address.country_code.toUpperCase() === 'BR'));
+        } else if (results.length > 1) {
+            const preferred = results.find(r => r.country_code && (r.country_code.toUpperCase() === 'US' || r.country_code.toUpperCase() === 'BR'));
             if (preferred) best = preferred;
         }
 
-        state.lat = parseFloat(best.lat);
-        state.lon = parseFloat(best.lon);
+        state.lat = best.latitude;
+        state.lon = best.longitude;
 
-        const countryCode = best.address && best.address.country_code ? best.address.country_code.toUpperCase() : '';
+        const countryCode = best.country_code ? best.country_code.toUpperCase() : '';
         state.country = overrideCountry || countryCode;
-        state.cityName = best.name || best.display_name.split(',')[0];
+        state.cityName = best.name || city;
 
         const openMeteoUrl = `https://api.open-meteo.com/v1/forecast?latitude=${state.lat}&longitude=${state.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,pressure_msl&daily=temperature_2m_max,temperature_2m_min,weather_code,sunrise,sunset&timezone=auto&forecast_days=6`;
         const omResp = await fetch(openMeteoUrl);
@@ -541,13 +538,12 @@ function getLocation() {
                 state.lat = pos.coords.latitude;
                 state.lon = pos.coords.longitude;
                 try {
-                    const geoUrl = `https://nominatim.openstreetmap.org/reverse?lat=${state.lat}&lon=${state.lon}&format=json`;
-                    const geoResp = await fetch(geoUrl, { headers: { 'User-Agent': 'WeatherApp/1.0' } });
-                    const geoData = await geoResp.json();
-                    if (geoData && geoData.address) {
-                        const cc = geoData.address.country_code ? geoData.address.country_code.toUpperCase() : '';
-                        state.country = cc;
-                        state.cityName = geoData.address.city || geoData.address.town || geoData.address.village || geoData.address.county || '';
+                    const geoUrl = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${state.lat}&longitude=${state.lon}&localityLanguage=en`;
+                    const geoResp = await fetch(geoUrl);
+                    if (geoResp.ok) {
+                        const geoData = await geoResp.json();
+                        state.country = (geoData.countryCode || '').toUpperCase();
+                        state.cityName = geoData.city || geoData.locality || geoData.principalSubdivision || '';
                     }
                 } catch (e) {}
 
