@@ -4,6 +4,7 @@ const state = {
     unit: 'C',
     lang: 'en',
     country: null,
+    stateCode: null,
     lat: null,
     lon: null,
     cityName: null,
@@ -235,74 +236,218 @@ async function fetchWeather(city) {
     }
 }
 
+let alertCache = { br: null, us: null, eu: null, jp: null, my: null };
+
+const jmaWarnings = {
+    '33': { en: 'Extreme Heavy Rain Warning', severity: 'Extreme' },
+    '35': { en: 'Extreme Storm Warning', severity: 'Extreme' },
+    '36': { en: 'Extreme Heavy Snow Warning', severity: 'Extreme' },
+    '37': { en: 'Extreme High Wave Warning', severity: 'Extreme' },
+    '38': { en: 'Extreme Storm Surge Warning', severity: 'Extreme' },
+    '03': { en: 'Heavy Rain Warning', severity: 'Warning' },
+    '04': { en: 'Flood Warning', severity: 'Warning' },
+    '05': { en: 'Storm Warning', severity: 'Warning' },
+    '06': { en: 'Heavy Snow Warning', severity: 'Warning' },
+    '07': { en: 'High Wave Warning', severity: 'Warning' },
+    '08': { en: 'Storm Surge Warning', severity: 'Warning' },
+    '32': { en: 'Blizzard Warning', severity: 'Warning' },
+    '10': { en: 'Heavy Rain Advisory', severity: 'Advisory' },
+    '12': { en: 'Heavy Snow Advisory', severity: 'Advisory' },
+    '13': { en: 'Winter Storm Advisory', severity: 'Advisory' },
+    '14': { en: 'Thunderstorm Advisory', severity: 'Advisory' },
+    '15': { en: 'Strong Wind Advisory', severity: 'Advisory' },
+    '16': { en: 'High Wave Advisory', severity: 'Advisory' },
+    '17': { en: 'Snowmelt Advisory', severity: 'Advisory' },
+    '18': { en: 'Flood Advisory', severity: 'Advisory' },
+    '19': { en: 'Storm Surge Advisory', severity: 'Advisory' },
+    '20': { en: 'Dense Fog Advisory', severity: 'Advisory' },
+    '21': { en: 'Dry Air Advisory', severity: 'Advisory' },
+    '22': { en: 'Avalanche Advisory', severity: 'Advisory' },
+    '23': { en: 'Low Temperature Advisory', severity: 'Advisory' },
+    '24': { en: 'Frost Advisory', severity: 'Advisory' },
+    '25': { en: 'Icing Advisory', severity: 'Advisory' },
+    '26': { en: 'Snow Accretion Advisory', severity: 'Advisory' },
+};
+
+const meteoalarmFeeds = {
+    'FR': 'france', 'DE': 'germany', 'IT': 'italy', 'ES': 'spain',
+    'GB': 'united-kingdom', 'AT': 'austria', 'BE': 'belgium',
+    'BG': 'bulgaria', 'HR': 'croatia', 'CY': 'cyprus', 'CZ': 'czechia',
+    'DK': 'denmark', 'EE': 'estonia', 'FI': 'finland', 'GR': 'greece',
+    'HU': 'hungary', 'IS': 'iceland', 'IE': 'ireland', 'IL': 'israel',
+    'LV': 'latvia', 'LT': 'lithuania', 'LU': 'luxembourg', 'MT': 'malta',
+    'MD': 'moldova', 'ME': 'montenegro', 'NL': 'netherlands',
+    'MK': 'republic-of-north-macedonia', 'NO': 'norway', 'PL': 'poland',
+    'PT': 'portugal', 'RO': 'romania', 'RS': 'serbia', 'SK': 'slovakia',
+    'SI': 'slovenia', 'SE': 'sweden', 'CH': 'switzerland', 'UA': 'ukraine',
+    'BA': 'bosnia-herzegovina', 'AD': 'andorra',
+};
+
 async function fetchAlerts(lat, lon, country, cityName) {
     state.alerts = null;
 
-    if (country === 'BR') {
-        try {
-            const inmetUrl = 'https://apiprevmet3.inmet.gov.br/avisos/ativos';
-            const resp = await fetch(inmetUrl);
-            if (!resp.ok) throw new Error('INMET direct failed');
-            const data = await resp.json();
-            state.alerts = parseInmetAlerts(data, cityName);
-        } catch (e) {
-            const proxyUrls = [
+    try {
+        if (country === 'BR') {
+            for (const url of [
+                'https://apiprevmet3.inmet.gov.br/avisos/ativos',
                 `https://corsproxy.io/?url=${encodeURIComponent('https://apiprevmet3.inmet.gov.br/avisos/ativos')}`,
-                `https://api.allorigins.win/raw?url=${encodeURIComponent('https://apiprevmet3.inmet.gov.br/avisos/ativos')}`,
-                `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent('https://apiprevmet3.inmet.gov.br/avisos/ativos')}`,
-            ];
-            for (const proxyUrl of proxyUrls) {
+            ]) {
                 try {
-                    const resp = await fetch(proxyUrl);
+                    const resp = await fetch(url);
                     if (!resp.ok) continue;
-                    const data = await resp.json();
+                    const text = await resp.text();
+                    if (!text.startsWith('{')) continue;
+                    const data = JSON.parse(text);
                     state.alerts = parseInmetAlerts(data, cityName);
+                    if (state.alerts) alertCache.br = state.alerts;
                     break;
-                } catch (e2) {}
+                } catch {}
             }
-        }
-    } else if (country === 'US') {
-        try {
-            const nwsUrl = `https://api.weather.gov/alerts/active?point=${lat},${lon}`;
-            const resp = await fetch(nwsUrl, {
-                headers: { 'User-Agent': 'WeatherApp/1.0', 'Accept': 'application/json' },
-            });
-            if (!resp.ok) throw new Error('NWS failed');
-            const data = await resp.json();
-            if (data && data.features) {
-                state.alerts = data.features.map(f => f.properties).filter(a => a && a.event && a.headline);
-            }
-        } catch (e) {
-            const proxyNws = `https://corsproxy.io/?url=${encodeURIComponent(`https://api.weather.gov/alerts/active?point=${lat},${lon}`)}`;
-            try {
-                const resp = await fetch(proxyNws, {
-                    headers: { 'User-Agent': 'WeatherApp/1.0', 'Accept': 'application/json' },
-                });
-                if (resp.ok) {
-                    const data = await resp.json();
-                    if (data && data.features) {
-                        state.alerts = data.features.map(f => f.properties).filter(a => a && a.event && a.headline);
-                    }
+            if (!state.alerts) state.alerts = alertCache.br;
+        } else if (country === 'US') {
+            const sevMap = { 'Extreme': 'Extreme', 'Severe': 'Warning', 'Moderate': 'Advisory', 'Minor': 'Advisory' };
+            const parseNws = (p) => ({ event: p.event, headline: p.headline, description: p.headline, severityCode: sevMap[p.severity] || 'Advisory', urgency: p.urgency || '' });
+            const url = `https://api.weather.gov/alerts/active?point=${lat},${lon}`;
+            const resp = await fetch(url, { headers: { 'User-Agent': 'WeatherApp/1.0', 'Accept': 'application/json' } });
+            if (resp.ok) {
+                const data = await resp.json();
+                if (data && data.features) {
+                    state.alerts = data.features.map(f => f.properties).filter(a => a && a.event && a.headline).map(parseNws);
+                    alertCache.us = state.alerts;
                 }
-            } catch (e2) {}
+            }
+            if (!state.alerts) state.alerts = alertCache.us;
+        } else if (meteoalarmFeeds[country]) {
+            const feed = meteoalarmFeeds[country];
+            const url = `https://corsproxy.io/?url=${encodeURIComponent(`https://feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-${feed}`)}`;
+            const resp = await fetch(url);
+            if (resp.ok) {
+                const text = await resp.text();
+                state.alerts = parseAtomFeed(text);
+                if (state.alerts) alertCache.eu = state.alerts;
+            }
+            if (!state.alerts) state.alerts = alertCache.eu;
+        } else if (country === 'JP') {
+            const resp = await fetch('https://www.jma.go.jp/bosai/warning/data/warning/map.json');
+            if (resp.ok) {
+                const data = await resp.json();
+                state.alerts = parseJmaAlerts(data);
+                if (state.alerts) alertCache.jp = state.alerts;
+            }
+            if (!state.alerts) state.alerts = alertCache.jp;
+        } else if (country === 'MY') {
+            const resp = await fetch('https://api.data.gov.my/weather/warning');
+            if (resp.ok) {
+                const data = await resp.json();
+                state.alerts = parseMalaysiaAlerts(data);
+                if (state.alerts) alertCache.my = state.alerts;
+            }
+            if (!state.alerts) state.alerts = alertCache.my;
         }
-    }
+    } catch (e) {}
 
     renderAlerts();
+}
+
+function parseAtomFeed(xmlText) {
+    const parser = new DOMParser();
+    const xml = parser.parseFromString(xmlText, 'text/xml');
+    const entries = xml.getElementsByTagName('entry');
+    if (!entries.length) return null;
+    const capNS = 'urn:oasis:names:tc:emergency:cap:1.2';
+    const get = (el, tag, ns) => {
+        const els = ns ? el.getElementsByTagNameNS(ns, tag) : el.getElementsByTagName(tag);
+        return els.length ? els[0].textContent : '';
+    };
+    const sevMap = { 'Extreme': 'Extreme', 'Severe': 'Warning', 'Moderate': 'Advisory', 'Minor': 'Advisory' };
+    const alerts = [];
+    for (const entry of entries) {
+        const event = get(entry, 'event', capNS);
+        if (!event) continue;
+        const severity = get(entry, 'severity', capNS);
+        const area = get(entry, 'areaDesc', capNS);
+        const title = get(entry, 'title', null);
+        const urgency = get(entry, 'urgency', capNS);
+        const severityCode = sevMap[severity] || 'Advisory';
+        alerts.push({
+            event: event,
+            headline: title || event,
+            description: event + (area ? ' - ' + area : ''),
+            severity: severityCode,
+            severityCode: severityCode,
+            urgency: urgency || '',
+        });
+    }
+    return alerts.length ? alerts : null;
+}
+
+function parseJmaAlerts(data) {
+    if (!Array.isArray(data)) return null;
+    const byType = {};
+    for (const pref of data) {
+        if (!pref.areaTypes || !pref.areaTypes[0]) continue;
+        const areas = pref.areaTypes[0].areas;
+        if (!areas) continue;
+        for (const area of areas) {
+            if (!area.warnings) continue;
+            for (const w of area.warnings) {
+                const info = jmaWarnings[w.code];
+                if (!info) continue;
+                const key = w.code;
+                if (!byType[key]) byType[key] = { info, affected: 0 };
+                byType[key].affected++;
+            }
+        }
+    }
+    const keys = Object.keys(byType);
+    if (!keys.length) return null;
+    return keys.map(code => {
+        const d = byType[code];
+        return {
+            event: d.info.en,
+            headline: d.info.en,
+            description: `${d.info.en} - ${d.affected} prefectures`,
+            severity: d.info.severity,
+            severityCode: d.info.severity,
+            urgency: 'Expected',
+        };
+    });
+}
+
+function parseMalaysiaAlerts(data) {
+    if (!Array.isArray(data)) return null;
+    const alerts = [];
+    for (const item of data) {
+        const title = item.warning_issue?.title_en || '';
+        if (!title || title === 'No Advisory') continue;
+        const heading = item.heading_en || title;
+        const text = item.text_en || '';
+        const severity = title.toLowerCase().includes('warning') ? 'Warning' : 'Advisory';
+        alerts.push({
+            event: heading,
+            headline: heading,
+            description: text || heading,
+            severity: severity,
+            severityCode: severity,
+            urgency: item.valid_to ? 'Future' : 'Expected',
+        });
+    }
+    return alerts.length ? alerts : null;
 }
 
 function parseInmetAlerts(data, cityName) {
     if (!data || typeof data !== 'object') return null;
     const alerts = [];
+    const stateAbbr = state.stateCode || '';
     for (const key in data) {
         const item = data[key];
         if (!item || !Array.isArray(item)) continue;
         item.forEach(a => {
-            if (a && a.regiao) {
-                const cidades = (a.regiao || '').toLowerCase();
-                const cidadesAfetadas = (a.cidades_afetadas || '').toLowerCase();
-                const searchStr = cidades + ' ' + cidadesAfetadas;
-                if (!searchStr.includes(cityName ? cityName.toLowerCase() : '')) return;
+            if (a.municipios) {
+                const munList = a.municipios.toLowerCase();
+                if (stateAbbr) {
+                    if (!munList.includes(` - ${stateAbbr.toLowerCase()}`)) return;
+                }
             }
             const severity = mapInmetSeverity(a);
             alerts.push({
@@ -311,7 +456,7 @@ function parseInmetAlerts(data, cityName) {
                 description: a.descricao || '',
                 severity: severity,
                 severityCode: severity,
-                urgency: a.gravidade || a.severidade || 'Unknown',
+                urgency: a.severidade || 'Unknown',
             });
         });
     }
@@ -319,10 +464,13 @@ function parseInmetAlerts(data, cityName) {
 }
 
 function mapInmetSeverity(alert) {
-    const sev = (alert.gravidade || alert.severidade || '').toLowerCase();
+    const sev = (alert.severidade || alert.gravidade || '').toLowerCase();
     const desc = (alert.descricao || alert.titulo || '').toLowerCase();
-    if (sev.includes('extreme') || sev.includes('grande') || desc.includes('grande perigo')) return 'Extreme';
-    if (sev.includes('warning') || sev.includes('perigo') || desc.includes('perigo')) return 'Warning';
+    if (sev.includes('extreme') || desc.includes('grande perigo')) return 'Extreme';
+    if (sev.includes('grande') && !sev.includes('potencial')) return 'Extreme';
+    if (sev.includes('warning')) return 'Warning';
+    if (sev === 'perigo') return 'Warning';
+    if (sev.includes('perigo') && !sev.includes('potencial')) return 'Warning';
     if (sev.includes('watch') || sev.includes('monitoramento')) return 'Watch';
     return 'Advisory';
 }
@@ -330,7 +478,9 @@ function mapInmetSeverity(alert) {
 function getSeverityClass(severity) {
     const s = (severity || '').toLowerCase();
     if (s.includes('extreme')) return 'severity-extreme';
-    if (s.includes('warning') || s.includes('perigo')) return 'severity-warning';
+    if (s === 'warning' || (s.includes('warning') && !s.includes('advisory'))) return 'severity-warning';
+    if (s === 'perigo') return 'severity-warning';
+    if (s.includes('perigo') && !s.includes('potencial')) return 'severity-warning';
     if (s.includes('watch') || s.includes('monitoramento')) return 'severity-watch';
     return 'severity-advisory';
 }
@@ -341,15 +491,17 @@ function renderAlerts() {
 
     if (!state.alerts || state.alerts.length === 0) {
         container.innerHTML = `<div class="alert-none">${i18n[state.lang].alertsNone}</div>`;
-        if (display.classList.contains('hidden')) return;
+        hideAlerts();
         return;
     }
 
+    showAlerts();
     container.innerHTML = state.alerts.map(a => {
         const sevKey = a.severityCode ? a.severityCode.toLowerCase() : 'advisory';
         let sevLabel = a.severityCode || 'Advisory';
         if (sevKey.includes('extreme')) sevLabel = i18n[state.lang].severityExtreme;
-        else if (sevKey.includes('warning') || sevKey.includes('perigo')) sevLabel = i18n[state.lang].severityWarning;
+        else if (sevKey === 'perigo' || (sevKey.includes('perigo') && !sevKey.includes('potencial'))) sevLabel = i18n[state.lang].severityWarning;
+        else if (sevKey === 'warning' || sevKey.includes('warning')) sevLabel = i18n[state.lang].severityWarning;
         else if (sevKey.includes('watch') || sevKey.includes('monitoramento')) sevLabel = i18n[state.lang].severityWatch;
         else sevLabel = i18n[state.lang].severityAdvisory;
 
@@ -531,53 +683,106 @@ function hideAlerts() {
     document.getElementById('alertsDisplay').classList.add('hidden');
 }
 
-function getLocation() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            async (pos) => {
-                state.lat = pos.coords.latitude;
-                state.lon = pos.coords.longitude;
-                try {
-                    const geoUrl = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${state.lat}&longitude=${state.lon}&localityLanguage=en`;
-                    const geoResp = await fetch(geoUrl);
-                    if (geoResp.ok) {
-                        const geoData = await geoResp.json();
-                        state.country = (geoData.countryCode || '').toUpperCase();
-                        state.cityName = geoData.city || geoData.locality || geoData.principalSubdivision || '';
-                    }
-                } catch (e) {}
+async function reverseGeocode(lat, lon) {
+    const nomUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`;
+    const nomResp = await fetch(nomUrl, { headers: { 'User-Agent': 'WeatherApp/1.0' } });
+    if (!nomResp.ok) throw new Error('Nominatim failed');
+    const nomData = await nomResp.json();
+    const addr = nomData.address || {};
+    state.cityName = nomData.name || addr.city || addr.town || addr.village || addr.municipality || addr.county || `${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+    state.country = (addr.country_code || '').toUpperCase();
+    const iso = addr['ISO3166-2-lvl4'];
+    if (iso) state.stateCode = iso.split('-')[1] || null;
+}
 
-                const openMeteoUrl = `https://api.open-meteo.com/v1/forecast?latitude=${state.lat}&longitude=${state.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,pressure_msl&daily=temperature_2m_max,temperature_2m_min,weather_code,sunrise,sunset&timezone=auto&forecast_days=6`;
-                try {
-                    const omResp = await fetch(openMeteoUrl);
-                    if (omResp.ok) {
-                        const data = await omResp.json();
-                        state.weather = data;
-                        state.forecast = data;
-                    }
-                } catch (e) {}
+async function fetchWeatherByCoords(lat, lon) {
+    state.lat = lat;
+    state.lon = lon;
 
-                hideWelcome();
-                hideLoading();
-                renderWeather();
-                renderForecast();
-                showWeather();
-                showForecast();
+    try {
+        await reverseGeocode(lat, lon);
+    } catch (e) {
+        try {
+            const geoUrl = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`;
+            const geoResp = await fetch(geoUrl);
+            if (geoResp.ok) {
+                const geoData = await geoResp.json();
+                    state.country = (geoData.countryCode || '').toUpperCase();
+                    state.cityName = geoData.city || geoData.locality || geoData.principalSubdivision || `${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+                    if (geoData.principalSubdivisionCode) state.stateCode = geoData.principalSubdivisionCode.split('-')[1] || null;
+                }
+            } catch (e2) {}
+        }
 
-                if (state.country) await fetchAlerts(state.lat, state.lon, state.country, state.cityName);
+        if (!state.cityName) state.cityName = `${lat.toFixed(4)}, ${lon.toFixed(4)}`;
 
-                setBackground();
-            },
-            () => {
-                hideLoading();
-                showWelcome();
-                showError(i18n[state.lang].errorLocation);
+    const openMeteoUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,pressure_msl&daily=temperature_2m_max,temperature_2m_min,weather_code,sunrise,sunset&timezone=auto&forecast_days=6`;
+    try {
+        const omResp = await fetch(openMeteoUrl);
+        if (omResp.ok) {
+            const data = await omResp.json();
+            state.weather = data;
+            state.forecast = data;
+        }
+    } catch (e) {}
+
+    hideLoading();
+
+    if (!state.weather || !state.weather.current) {
+        showError(i18n[state.lang].errorGeneric);
+        showWelcome();
+        return;
+    }
+
+    hideWelcome();
+    renderWeather();
+    renderForecast();
+    showWeather();
+    showForecast();
+
+    if (state.country) await fetchAlerts(lat, lon, state.country, state.cityName);
+    setBackground();
+}
+
+async function fetchLocationByIP() {
+    for (const url of [
+        'https://ipapi.co/json/',
+        'https://freegeoip.app/json/',
+    ]) {
+        try {
+            const resp = await fetch(url);
+            if (resp.ok) {
+                const data = await resp.json();
+                const lat = data.latitude ?? data.lat;
+                const lon = data.longitude ?? data.lon;
+                if (lat != null && lon != null) {
+                    state.cityName = data.city || '';
+                    state.country = (data.country_code || data.countryCode || '').toUpperCase();
+                    state.stateCode = (data.region_code || '').toUpperCase() || null;
+                    await fetchWeatherByCoords(lat, lon);
+                    return true;
+                }
             }
-        );
+        } catch (e) {}
+    }
+    return false;
+}
+
+function getLocation() {
+    const geoOptions = { enableHighAccuracy: false, timeout: 5000 };
+    const onSuccess = (pos) => {
+        fetchWeatherByCoords(pos.coords.latitude, pos.coords.longitude);
+    };
+    const onError = () => {
+        hideLoading();
+        fetchLocationByIP();
+    };
+
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(onSuccess, onError, geoOptions);
     } else {
         hideLoading();
-        showWelcome();
-        showError(i18n[state.lang].errorLocation);
+        fetchLocationByIP();
     }
 }
 

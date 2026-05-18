@@ -1,3 +1,5 @@
 *.ps1
 gh_*.txt
+server.cs
+server.exe
 
