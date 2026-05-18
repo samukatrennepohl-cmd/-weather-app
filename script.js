@@ -10,6 +10,65 @@ const state = {
     alerts: null,
 };
 
+const wmoIcons = {
+    0: '<img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ccircle cx=%2250%22 cy=%2250%22 r=%2220%22 fill=%22%23FFD700%22/%3E%3C/svg%3E" alt="Clear">',
+    1: '<img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ccircle cx=%2250%22 cy=%2250%22 r=%2220%22 fill=%22%23FFD700%22/%3E%3Cpath d=%22M60 30 Q80 40 75 60 Q70 75 50 70%22 fill=%22%23ccc%22/%3E%3C/svg%3E" alt="Mainly Clear">',
+    2: '<img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ccircle cx=%2245%22 cy=%2245%22 r=%2218%22 fill=%22%23FFD700%22/%3E%3Cpath d=%22M55 30 Q75 35 72 55 Q68 70 50 68 Q35 72 30 55 Q25 40 40 32%22 fill=%22%23999%22/%3E%3C/svg%3E" alt="Partly Cloudy">',
+    3: '<img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Cpath d=%22M30 45 Q45 30 60 40 Q75 30 80 50 Q85 65 65 68 L35 68 Q20 65 20 50 Q18 40 30 45%22 fill=%22%23999%22/%3E%3C/svg%3E" alt="Overcast">',
+    45: '<img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Cpath d=%22M20 50 Q40 35 60 45 Q75 35 85 55%22 stroke=%22%23999%22 stroke-width=%228%22 fill=%22none%22 stroke-linecap=%22round%22 opacity=%220.5%22/%3E%3Cpath d=%22M15 60 Q35 45 55 55 Q70 45 80 65%22 stroke=%22%23999%22 stroke-width=%228%22 fill=%22none%22 stroke-linecap=%22round%22 opacity=%220.5%22/%3E%3C/svg%3E" alt="Foggy">',
+    48: '<img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Cpath d=%22M20 50 Q40 35 60 45 Q75 35 85 55%22 stroke=%22%23999%22 stroke-width=%228%22 fill=%22none%22 stroke-linecap=%22round%22 opacity=%220.5%22/%3E%3Cpath d=%22M15 60 Q35 45 55 55 Q70 45 80 65%22 stroke=%22%23999%22 stroke-width=%228%22 fill=%22none%22 stroke-linecap=%22round%22 opacity=%220.5%22/%3E%3C/svg%3E" alt="Fog">',
+    51: '<img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Cpath d=%22M30 40 Q50 30 65 40 Q80 30 85 50 Q88 65 65 68 L35 68 Q20 65 20 50%22 fill=%22%23999%22/%3E%3Cline x1=%2235%22 y1=%2275%22 x2=%2235%22 y2=%2285%22 stroke=%22%2369f%22 stroke-width=%222%22/%3E%3C/svg%3E" alt="Light Drizzle">',
+    53: '<img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Cpath d=%22M30 40 Q50 30 65 40 Q80 30 85 50 Q88 65 65 68 L35 68 Q20 65 20 50%22 fill=%22%23999%22/%3E%3Cline x1=%2230%22 y1=%2275%22 x2=%2230%22 y2=%2285%22 stroke=%22%2369f%22 stroke-width=%223%22/%3E%3Cline x1=%2240%22 y1=%2275%22 x2=%2240%22 y2=%2285%22 stroke=%22%2369f%22 stroke-width=%223%22/%3E%3C/svg%3E" alt="Moderate Drizzle">',
+    55: '<img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Cpath d=%22M30 40 Q50 30 65 40 Q80 30 85 50 Q88 65 65 68 L35 68 Q20 65 20 50%22 fill=%22%23999%22/%3E%3Cline x1=%2230%22 y1=%2275%22 x2=%2230%22 y2=%2288%22 stroke=%22%2339a%22 stroke-width=%223%22/%3E%3Cline x1=%2240%22 y1=%2275%22 x2=%2240%22 y2=%2288%22 stroke=%22%2339a%22 stroke-width=%223%22/%3E%3Cline x1=%2250%22 y1=%2275%22 x2=%2250%22 y2=%2288%22 stroke=%22%2339a%22 stroke-width=%223%22/%3E%3C/svg%3E" alt="Dense Drizzle">',
+    56: '<img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Cpath d=%22M30 40 Q50 30 65 40 Q80 30 85 50 Q88 65 65 68 L35 68 Q20 65 20 50%22 fill=%22%23999%22/%3E%3Cline x1=%2230%22 y1=%2275%22 x2=%2230%22 y2=%2285%22 stroke=%22%2369f%22 stroke-width=%222%22/%3E%3C/svg%3E" alt="Freezing Drizzle">',
+    57: '<img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Cpath d=%22M30 40 Q50 30 65 40 Q80 30 85 50 Q88 65 65 68 L35 68 Q20 65 20 50%22 fill=%22%23999%22/%3E%3Cline x1=%2230%22 y1=%2275%22 x2=%2230%22 y2=%2288%22 stroke=%22%2339a%22 stroke-width=%223%22/%3E%3Cline x1=%2240%22 y1=%2275%22 x2=%2240%22 y2=%2288%22 stroke=%22%2339a%22 stroke-width=%223%22/%3E%3C/svg%3E" alt="Freezing Drizzle">',
+    61: '<img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Cpath d=%22M30 35 Q50 25 65 35 Q80 25 85 45 Q88 60 65 63 L35 63 Q20 60 20 45%22 fill=%22%23999%22/%3E%3Cline x1=%2230%22 y1=%2270%22 x2=%2230%22 y2=%2285%22 stroke=%22%2369f%22 stroke-width=%222%22/%3E%3Cline x1=%2240%22 y1=%2270%22 x2=%2240%22 y2=%2285%22 stroke=%22%2369f%22 stroke-width=%222%22/%3E%3C/svg%3E" alt="Slight Rain">',
+    63: '<img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Cpath d=%22M30 35 Q50 25 65 35 Q80 25 85 45 Q88 60 65 63 L35 63 Q20 60 20 45%22 fill=%22%23999%22/%3E%3Cline x1=%2230%22 y1=%2270%22 x2=%2230%22 y2=%2285%22 stroke=%22%2339a%22 stroke-width=%223%22/%3E%3Cline x1=%2240%22 y1=%2270%22 x2=%2240%22 y2=%2285%22 stroke=%22%2339a%22 stroke-width=%223%22/%3E%3Cline x1=%2250%22 y1=%2270%22 x2=%2250%22 y2=%2285%22 stroke=%22%2339a%22 stroke-width=%223%22/%3E%3C/svg%3E" alt="Moderate Rain">',
+    65: '<img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Cpath d=%22M30 35 Q50 25 65 35 Q80 25 85 45 Q88 60 65 63 L35 63 Q20 60 20 45%22 fill=%22%23999%22/%3E%3Cline x1=%2230%22 y1=%2270%22 x2=%2230%22 y2=%2288%22 stroke=%22%2339a%22 stroke-width=%223%22/%3E%3Cline x1=%2240%22 y1=%2268%22 x2=%2240%22 y2=%2288%22 stroke=%22%2339a%22 stroke-width=%223%22/%3E%3Cline x1=%2250%22 y1=%2270%22 x2=%2250%22 y2=%2290%22 stroke=%22%2339a%22 stroke-width=%224%22/%3E%3Cline x1=%2260%22 y1=%2268%22 x2=%2260%22 y2=%2286%22 stroke=%22%2339a%22 stroke-width=%223%22/%3E%3C/svg%3E" alt="Heavy Rain">',
+    66: '<img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Cpath d=%22M30 35 Q50 25 65 35 Q80 25 85 45 Q88 60 65 63 L35 63 Q20 60 20 45%22 fill=%22%23999%22/%3E%3Cline x1=%2230%22 y1=%2270%22 x2=%2230%22 y2=%2285%22 stroke=%22%2369f%22 stroke-width=%222%22/%3E%3Cline x1=%2240%22 y1=%2270%22 x2=%2240%22 y2=%2285%22 stroke=%22%2369f%22 stroke-width=%222%22/%3E%3C/svg%3E" alt="Freezing Rain">',
+    67: '<img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Cpath d=%22M30 35 Q50 25 65 35 Q80 25 85 45 Q88 60 65 63 L35 63 Q20 60 20 45%22 fill=%22%23999%22/%3E%3Cline x1=%2230%22 y1=%2270%22 x2=%2230%22 y2=%2288%22 stroke=%22%2339a%22 stroke-width=%223%22/%3E%3Cline x1=%2240%22 y1=%2268%22 x2=%2240%22 y2=%2288%22 stroke=%22%2339a%22 stroke-width=%223%22/%3E%3Cline x1=%2250%22 y1=%2270%22 x2=%2250%22 y2=%2290%22 stroke=%22%2339a%22 stroke-width=%224%22/%3E%3C/svg%3E" alt="Freezing Rain">',
+    71: '<img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Cpath d=%22M30 40 Q50 30 65 40 Q80 30 85 50 Q88 65 65 68 L35 68 Q20 65 20 50%22 fill=%22%23999%22/%3E%3Ccircle cx=%2235%22 cy=%2278%22 r=%223%22 fill=%22%23fff%22/%3E%3Ccircle cx=%2245%22 cy=%2280%22 r=%223%22 fill=%22%23fff%22/%3E%3C/svg%3E" alt="Slight Snow">',
+    73: '<img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Cpath d=%22M30 40 Q50 30 65 40 Q80 30 85 50 Q88 65 65 68 L35 68 Q20 65 20 50%22 fill=%22%23999%22/%3E%3Ccircle cx=%2230%22 cy=%2275%22 r=%223%22 fill=%22%23fff%22/%3E%3Ccircle cx=%2240%22 cy=%2280%22 r=%223%22 fill=%22%23fff%22/%3E%3Ccircle cx=%2250%22 cy=%2275%22 r=%223%22 fill=%22%23fff%22/%3E%3C/svg%3E" alt="Moderate Snow">',
+    75: '<img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Cpath d=%22M30 40 Q50 30 65 40 Q80 30 85 50 Q88 65 65 68 L35 68 Q20 65 20 50%22 fill=%22%23999%22/%3E%3Ccircle cx=%2230%22 cy=%2275%22 r=%223%22 fill=%22%23fff%22/%3E%3Ccircle cx=%2240%22 cy=%2280%22 r=%224%22 fill=%22%23fff%22/%3E%3Ccircle cx=%2250%22 cy=%2273%22 r=%223%22 fill=%22%23fff%22/%3E%3Ccircle cx=%2260%22 cy=%2278%22 r=%224%22 fill=%22%23fff%22/%3E%3C/svg%3E" alt="Heavy Snow">',
+    77: '<img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Cpath d=%22M30 40 Q50 30 65 40 Q80 30 85 50 Q88 65 65 68 L35 68 Q20 65 20 50%22 fill=%22%23999%22/%3E%3Ccircle cx=%2235%22 cy=%2278%22 r=%222%22 fill=%22%23fff%22/%3E%3Ccircle cx=%2245%22 cy=%2280%22 r=%222%22 fill=%22%23fff%22/%3E%3C/svg%3E" alt="Snow Grains">',
+    80: '<img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Cpath d=%22M30 35 Q50 25 65 35 Q80 25 85 45 Q88 60 65 63 L35 63 Q20 60 20 45%22 fill=%22%23999%22/%3E%3Cline x1=%2230%22 y1=%2270%22 x2=%2230%22 y2=%2285%22 stroke=%22%2369f%22 stroke-width=%222%22/%3E%3Cline x1=%2240%22 y1=%2270%22 x2=%2240%22 y2=%2285%22 stroke=%22%2369f%22 stroke-width=%222%22/%3E%3C/svg%3E" alt="Rain Showers">',
+    81: '<img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Cpath d=%22M30 35 Q50 25 65 35 Q80 25 85 45 Q88 60 65 63 L35 63 Q20 60 20 45%22 fill=%22%23999%22/%3E%3Cline x1=%2230%22 y1=%2270%22 x2=%2230%22 y2=%2285%22 stroke=%22%2339a%22 stroke-width=%223%22/%3E%3Cline x1=%2240%22 y1=%2270%22 x2=%2240%22 y2=%2285%22 stroke=%22%2339a%22 stroke-width=%223%22/%3E%3C/svg%3E" alt="Rain Showers">',
+    82: '<img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Cpath d=%22M30 35 Q50 25 65 35 Q80 25 85 45 Q88 60 65 63 L35 63 Q20 60 20 45%22 fill=%22%23999%22/%3E%3Cline x1=%2230%22 y1=%2270%22 x2=%2230%22 y2=%2288%22 stroke=%22%2339a%22 stroke-width=%223%22/%3E%3Cline x1=%2240%22 y1=%2268%22 x2=%2240%22 y2=%2288%22 stroke=%22%2339a%22 stroke-width=%223%22/%3E%3Cline x1=%2250%22 y1=%2270%22 x2=%2250%22 y2=%2290%22 stroke=%22%2339a%22 stroke-width=%223%22/%3E%3C/svg%3E" alt="Violent Rain">',
+    85: '<img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Cpath d=%22M30 35 Q50 25 65 35 Q80 25 85 45 Q88 60 65 63 L35 63 Q20 60 20 45%22 fill=%22%23999%22/%3E%3Ccircle cx=%2230%22 cy=%2275%22 r=%223%22 fill=%22%23fff%22/%3E%3Ccircle cx=%2240%22 cy=%2280%22 r=%223%22 fill=%22%23fff%22/%3E%3C/svg%3E" alt="Snow Showers">',
+    86: '<img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Cpath d=%22M30 35 Q50 25 65 35 Q80 25 85 45 Q88 60 65 63 L35 63 Q20 60 20 45%22 fill=%22%23999%22/%3E%3Ccircle cx=%2230%22 cy=%2275%22 r=%224%22 fill=%22%23fff%22/%3E%3Ccircle cx=%2240%22 cy=%2280%22 r=%223%22 fill=%22%23fff%22/%3E%3C/svg%3E" alt="Snow Showers">',
+    95: '<img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Cpath d=%22M30 35 Q50 25 65 35 Q80 25 85 45 Q88 60 65 63 L35 63 Q20 60 20 45%22 fill=%22%23999%22/%3E%3Cpolyline points=%2240,50 45,65 55,55 60,70%22 stroke=%22%23FFD700%22 stroke-width=%222%22 fill=%22none%22/%3E%3C/svg%3E" alt="Thunderstorm">',
+    96: '<img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Cpath d=%22M30 35 Q50 25 65 35 Q80 25 85 45 Q88 60 65 63 L35 63 Q20 60 20 45%22 fill=%22%23999%22/%3E%3Cpolyline points=%2240,50 45,65 55,55 60,70%22 stroke=%22%23FFD700%22 stroke-width=%222%22 fill=%22none%22/%3E%3Ccircle cx=%2255%22 cy=%2255%22 r=%223%22 fill=%22%23fff%22/%3E%3C/svg%3E" alt="Hail Thunderstorm">',
+    99: '<img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Cpath d=%22M30 35 Q50 25 65 35 Q80 25 85 45 Q88 60 65 63 L35 63 Q20 60 20 45%22 fill=%22%23999%22/%3E%3Cpolyline points=%2240,50 45,65 55,55 60,70%22 stroke=%22%23FFD700%22 stroke-width=%222%22 fill=%22none%22/%3E%3Ccircle cx=%2255%22 cy=%2255%22 r=%224%22 fill=%22%23fff%22/%3E%3Ccircle cx=%2245%22 cy=%2265%22 r=%224%22 fill=%22%23fff%22/%3E%3C/svg%3E" alt="Heavy Hail Thunderstorm">',
+};
+
+const wmoDescriptions = {
+    0: 'Clear sky', 1: 'Mainly clear', 2: 'Partly cloudy', 3: 'Overcast',
+    45: 'Foggy', 48: 'Depositing rime fog',
+    51: 'Light drizzle', 53: 'Moderate drizzle', 55: 'Dense drizzle',
+    56: 'Light freezing drizzle', 57: 'Dense freezing drizzle',
+    61: 'Slight rain', 63: 'Moderate rain', 65: 'Heavy rain',
+    66: 'Light freezing rain', 67: 'Heavy freezing rain',
+    71: 'Slight snow', 73: 'Moderate snow', 75: 'Heavy snow',
+    77: 'Snow grains',
+    80: 'Slight rain showers', 81: 'Moderate rain showers', 82: 'Violent rain showers',
+    85: 'Slight snow showers', 86: 'Heavy snow showers',
+    95: 'Thunderstorm', 96: 'Thunderstorm with slight hail', 99: 'Thunderstorm with heavy hail',
+};
+
+const wmoIconsSimple = {
+    0: '&#x2600;&#xFE0F;', 1: '&#x1F324;&#xFE0F;', 2: '&#x26C5;', 3: '&#x2601;&#xFE0F;',
+    45: '&#x1F32B;&#xFE0F;', 48: '&#x1F32B;&#xFE0F;',
+    51: '&#x1F326;&#xFE0F;', 53: '&#x1F326;&#xFE0F;', 55: '&#x1F327;&#xFE0F;',
+    56: '&#x1F327;&#xFE0F;', 57: '&#x1F327;&#xFE0F;',
+    61: '&#x1F326;&#xFE0F;', 63: '&#x1F327;&#xFE0F;', 65: '&#x1F327;&#xFE0F;',
+    66: '&#x1F327;&#xFE0F;', 67: '&#x1F327;&#xFE0F;',
+    71: '&#x1F328;&#xFE0F;', 73: '&#x1F328;&#xFE0F;', 75: '&#x2744;&#xFE0F;',
+    77: '&#x2744;&#xFE0F;',
+    80: '&#x1F326;&#xFE0F;', 81: '&#x1F327;&#xFE0F;', 82: '&#x1F327;&#xFE0F;',
+    85: '&#x1F328;&#xFE0F;', 86: '&#x1F328;&#xFE0F;',
+    95: '&#x26C8;&#xFE0F;', 96: '&#x26C8;&#xFE0F;', 99: '&#x26C8;&#xFE0F;',
+};
+
 const i18n = {
     en: {
         feelsLike: 'Feels Like',
@@ -140,8 +199,6 @@ async function fetchWeather(city) {
 
         let best = geoData[0];
 
-        const allowed = overrideCountry ? [overrideCountry] : null;
-
         if (overrideCountry) {
             const match = geoData.find(g => g.address && g.address.country_code && g.address.country_code.toUpperCase() === overrideCountry);
             if (match) best = match;
@@ -157,14 +214,13 @@ async function fetchWeather(city) {
         state.country = overrideCountry || countryCode;
         state.cityName = best.name || best.display_name.split(',')[0];
 
-        const owmUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${state.lat}&lon=${state.lon}&appid=63f78c8434ee2b14d09731d0f5362f6b`;
-        const owmResp = await fetch(owmUrl);
-        if (!owmResp.ok) { showError(i18n[state.lang].errorGeneric); showWelcome(); return; }
-        state.weather = await owmResp.json();
+        const openMeteoUrl = `https://api.open-meteo.com/v1/forecast?latitude=${state.lat}&longitude=${state.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,pressure_msl&daily=temperature_2m_max,temperature_2m_min,weather_code,sunrise,sunset&timezone=auto&forecast_days=6`;
+        const omResp = await fetch(openMeteoUrl);
+        if (!omResp.ok) { showError(i18n[state.lang].errorGeneric); showWelcome(); return; }
+        const data = await omResp.json();
 
-        const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${state.lat}&lon=${state.lon}&appid=63f78c8434ee2b14d09731d0f5362f6b`;
-        const forecastResp = await fetch(forecastUrl);
-        if (forecastResp.ok) state.forecast = await forecastResp.json();
+        state.weather = data;
+        state.forecast = data;
 
         renderWeather();
         renderForecast();
@@ -312,53 +368,48 @@ function renderAlerts() {
 }
 
 function renderWeather() {
-    if (!state.weather) return;
+    if (!state.weather || !state.weather.current) return;
 
-    const w = state.weather;
-    document.getElementById('cityName').textContent = state.cityName || w.name;
-    document.getElementById('country').textContent = state.country || (w.sys && w.sys.country) || '';
+    const c = state.weather.current;
+    const d = state.weather.daily;
 
-    const desc = w.weather && w.weather[0] ? w.weather[0].description : '';
+    document.getElementById('cityName').textContent = state.cityName || '';
+    document.getElementById('country').textContent = state.country || '';
+
+    const code = c.weather_code != null ? c.weather_code : 0;
+    const desc = wmoDescriptions[code] || '';
     document.getElementById('weatherDesc').textContent = desc;
 
-    const iconCode = w.weather && w.weather[0] ? w.weather[0].icon : '01d';
-    document.getElementById('weatherIcon').innerHTML = `<img src="https://openweathermap.org/img/wn/${iconCode}@2x.png" alt="${desc}">`;
+    document.getElementById('weatherIcon').innerHTML = wmoIcons[code] || wmoIconsSimple[code] || '';
 
-    const temp = w.main ? w.main.temp : 0;
-    document.getElementById('temperature').textContent = formatTemp(temp);
+    document.getElementById('temperature').textContent = formatTemp(c.temperature_2m);
 
-    const tempMax = w.main ? w.main.temp_max : 0;
-    const tempMin = w.main ? w.main.temp_min : 0;
-    document.getElementById('tempMax').textContent = formatTemp(tempMax);
-    document.getElementById('tempMin').textContent = formatTemp(tempMin);
+    if (d) {
+        document.getElementById('tempMax').textContent = formatTemp(d.temperature_2m_max[0]);
+        document.getElementById('tempMin').textContent = formatTemp(d.temperature_2m_min[0]);
+        if (d.sunrise && d.sunrise[0]) {
+            document.getElementById('sunrise').textContent = formatTimeStr(d.sunrise[0]);
+        }
+        if (d.sunset && d.sunset[0]) {
+            document.getElementById('sunset').textContent = formatTimeStr(d.sunset[0]);
+        }
+    }
 
-    const feelsLike = w.main ? w.main.feels_like : 0;
-    document.getElementById('feelsLike').textContent = formatTemp(feelsLike);
+    document.getElementById('feelsLike').textContent = formatTemp(c.apparent_temperature);
+    document.getElementById('humidity').textContent = c.relative_humidity_2m != null ? c.relative_humidity_2m : '--';
 
-    const humidity = w.main ? w.main.humidity : 0;
-    document.getElementById('humidity').textContent = humidity;
-
-    const windSpeed = w.wind ? w.wind.speed : 0;
+    const windSpeed = c.wind_speed_10m != null ? c.wind_speed_10m : 0;
     const windEl = document.getElementById('wind');
     const windUnitEl = document.getElementById('windUnit');
     if (state.unit === 'C') {
-        windEl.textContent = windSpeed;
+        windEl.textContent = windSpeed.toFixed(1);
         windUnitEl.textContent = 'm/s';
     } else {
         windEl.textContent = (windSpeed * 2.237).toFixed(1);
         windUnitEl.textContent = 'mph';
     }
 
-    const pressure = w.main ? w.main.pressure : 0;
-    document.getElementById('pressure').textContent = pressure;
-
-    const timezone = (w.timezone || 0);
-    if (w.sys && w.sys.sunrise) {
-        document.getElementById('sunrise').textContent = formatTime(w.sys.sunrise, timezone);
-    }
-    if (w.sys && w.sys.sunset) {
-        document.getElementById('sunset').textContent = formatTime(w.sys.sunset, timezone);
-    }
+    document.getElementById('pressure').textContent = c.pressure_msl != null ? Math.round(c.pressure_msl) : '--';
 
     applyLanguage();
 }
@@ -367,65 +418,50 @@ function renderForecast() {
     const container = document.getElementById('forecastContainer');
     container.innerHTML = '';
 
-    if (!state.forecast || !state.forecast.list) return;
+    if (!state.forecast || !state.forecast.daily || !state.forecast.daily.time) return;
 
-    const daily = {};
-    const now = new Date();
-    const todayStr = now.toISOString().split('T')[0];
-
-    state.forecast.list.forEach(item => {
-        const dateStr = item.dt_txt.split(' ')[0];
-        if (dateStr === todayStr) return;
-        if (!daily[dateStr]) daily[dateStr] = [];
-        daily[dateStr].push(item);
-    });
-
+    const daily = state.forecast.daily;
     const dayNames = state.lang === 'pt'
         ? ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
         : state.lang === 'es'
         ? ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb']
         : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-    const entries = Object.entries(daily).slice(0, 5);
-    entries.forEach(([dateStr, items]) => {
-        const date = new Date(dateStr + 'T12:00:00');
+    const todayStr = new Date().toISOString().split('T')[0];
+    let startIdx = daily.time[0] === todayStr ? 1 : 0;
+
+    for (let i = startIdx; i < Math.min(daily.time.length, startIdx + 5); i++) {
+        const date = new Date(daily.time[i] + 'T12:00:00');
         const dayName = dayNames[date.getDay()];
-
-        const temps = items.map(i => i.main.temp);
-        const high = Math.max(...temps);
-        const low = Math.min(...temps);
-
-        const midItem = items[Math.floor(items.length / 2)];
-        const icon = midItem && midItem.weather ? midItem.weather[0].icon : '01d';
+        const code = daily.weather_code[i] != null ? daily.weather_code[i] : 0;
 
         const card = document.createElement('div');
         card.className = 'forecast-card';
         card.innerHTML = `
             <div class="day">${dayName}</div>
-            <div class="icon"><img src="https://openweathermap.org/img/wn/${icon}.png" alt=""></div>
+            <div class="icon">${wmoIconsSimple[code] || ''}</div>
             <div class="temps">
-                <span class="temp-high">${formatTemp(high)}</span>
-                <span class="temp-low">${formatTemp(low)}</span>
+                <span class="temp-high">${formatTemp(daily.temperature_2m_max[i])}</span>
+                <span class="temp-low">${formatTemp(daily.temperature_2m_min[i])}</span>
             </div>
         `;
         container.appendChild(card);
-    });
-}
-
-function formatTemp(kelvin) {
-    if (state.unit === 'C') {
-        return Math.round(kelvin - 273.15) + '°';
-    } else {
-        return Math.round((kelvin - 273.15) * 9/5 + 32) + '°';
     }
 }
 
-function formatTime(timestamp, timezone) {
-    const date = new Date((timestamp + timezone) * 1000);
-    const utc = date.getUTCHours() * 60 + date.getUTCMinutes();
-    const hours = Math.floor(utc / 60);
-    const minutes = utc % 60;
-    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+function formatTemp(celsius) {
+    if (celsius == null) return '--';
+    if (state.unit === 'C') {
+        return Math.round(celsius) + '°';
+    } else {
+        return Math.round(celsius * 9/5 + 32) + '°';
+    }
+}
+
+function formatTimeStr(dateStr) {
+    if (!dateStr) return '--';
+    const d = new Date(dateStr);
+    return d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0');
 }
 
 function applyLanguage() {
@@ -515,16 +551,14 @@ function getLocation() {
                     }
                 } catch (e) {}
 
-                const owmUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${state.lat}&lon=${state.lon}&appid=63f78c8434ee2b14d09731d0f5362f6b`;
+                const openMeteoUrl = `https://api.open-meteo.com/v1/forecast?latitude=${state.lat}&longitude=${state.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,pressure_msl&daily=temperature_2m_max,temperature_2m_min,weather_code,sunrise,sunset&timezone=auto&forecast_days=6`;
                 try {
-                    const owmResp = await fetch(owmUrl);
-                    if (owmResp.ok) state.weather = await owmResp.json();
-                } catch (e) {}
-
-                const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${state.lat}&lon=${state.lon}&appid=63f78c8434ee2b14d09731d0f5362f6b`;
-                try {
-                    const forecastResp = await fetch(forecastUrl);
-                    if (forecastResp.ok) state.forecast = await forecastResp.json();
+                    const omResp = await fetch(openMeteoUrl);
+                    if (omResp.ok) {
+                        const data = await omResp.json();
+                        state.weather = data;
+                        state.forecast = data;
+                    }
                 } catch (e) {}
 
                 hideWelcome();
