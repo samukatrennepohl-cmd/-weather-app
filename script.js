@@ -42,19 +42,53 @@ const wmoIcons = {
     99: '<img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Cpath d=%22M30 35 Q50 25 65 35 Q80 25 85 45 Q88 60 65 63 L35 63 Q20 60 20 45%22 fill=%22%23999%22/%3E%3Cpolyline points=%2240,50 45,65 55,55 60,70%22 stroke=%22%23FFD700%22 stroke-width=%222%22 fill=%22none%22/%3E%3Ccircle cx=%2255%22 cy=%2255%22 r=%224%22 fill=%22%23fff%22/%3E%3Ccircle cx=%2245%22 cy=%2265%22 r=%224%22 fill=%22%23fff%22/%3E%3C/svg%3E" alt="Heavy Hail Thunderstorm">',
 };
 
-const wmoDescriptions = {
-    0: 'Clear sky', 1: 'Mainly clear', 2: 'Partly cloudy', 3: 'Overcast',
-    45: 'Foggy', 48: 'Depositing rime fog',
-    51: 'Light drizzle', 53: 'Moderate drizzle', 55: 'Dense drizzle',
-    56: 'Light freezing drizzle', 57: 'Dense freezing drizzle',
-    61: 'Slight rain', 63: 'Moderate rain', 65: 'Heavy rain',
-    66: 'Light freezing rain', 67: 'Heavy freezing rain',
-    71: 'Slight snow', 73: 'Moderate snow', 75: 'Heavy snow',
-    77: 'Snow grains',
-    80: 'Slight rain showers', 81: 'Moderate rain showers', 82: 'Violent rain showers',
-    85: 'Slight snow showers', 86: 'Heavy snow showers',
-    95: 'Thunderstorm', 96: 'Thunderstorm with slight hail', 99: 'Thunderstorm with heavy hail',
+const wmoLocale = {
+    en: {
+        0: 'Clear sky', 1: 'Mainly clear', 2: 'Partly cloudy', 3: 'Overcast',
+        45: 'Foggy', 48: 'Depositing rime fog',
+        51: 'Light drizzle', 53: 'Moderate drizzle', 55: 'Dense drizzle',
+        56: 'Light freezing drizzle', 57: 'Dense freezing drizzle',
+        61: 'Slight rain', 63: 'Moderate rain', 65: 'Heavy rain',
+        66: 'Light freezing rain', 67: 'Heavy freezing rain',
+        71: 'Slight snow', 73: 'Moderate snow', 75: 'Heavy snow',
+        77: 'Snow grains',
+        80: 'Slight rain showers', 81: 'Moderate rain showers', 82: 'Violent rain showers',
+        85: 'Slight snow showers', 86: 'Heavy snow showers',
+        95: 'Thunderstorm', 96: 'Thunderstorm with slight hail', 99: 'Thunderstorm with heavy hail',
+    },
+    pt: {
+        0: 'Céu limpo', 1: 'Predominantemente limpo', 2: 'Parcialmente nublado', 3: 'Nublado',
+        45: 'Neblinoso', 48: 'Neblina com geada',
+        51: 'Garoa leve', 53: 'Garoa moderada', 55: 'Garoa intensa',
+        56: 'Garoa congelante leve', 57: 'Garoa congelante intensa',
+        61: 'Chuva fraca', 63: 'Chuva moderada', 65: 'Chuva forte',
+        66: 'Chuva congelante leve', 67: 'Chuva congelante forte',
+        71: 'Neve fraca', 73: 'Neve moderada', 75: 'Neve forte',
+        77: 'Grãos de neve',
+        80: 'Pancadas de chuva fracas', 81: 'Pancadas de chuva moderadas', 82: 'Pancadas de chuva violentas',
+        85: 'Pancadas de neve fracas', 86: 'Pancadas de neve fortes',
+        95: 'Tempestade', 96: 'Tempestade com granizo leve', 99: 'Tempestade com granizo forte',
+    },
+    es: {
+        0: 'Cielo despejado', 1: 'Mayormente despejado', 2: 'Parcialmente nublado', 3: 'Nublado',
+        45: 'Neblinoso', 48: 'Niebla con escarcha',
+        51: 'Llovizna ligera', 53: 'Llovizna moderada', 55: 'Llovizna densa',
+        56: 'Llovizna helada ligera', 57: 'Llovizna helada densa',
+        61: 'Lluvia débil', 63: 'Lluvia moderada', 65: 'Lluvia fuerte',
+        66: 'Lluvia helada ligera', 67: 'Lluvia helada fuerte',
+        71: 'Nieve débil', 73: 'Nieve moderada', 75: 'Nieve fuerte',
+        77: 'Granos de nieve',
+        80: 'Chubascos débiles', 81: 'Chubascos moderados', 82: 'Chubascos violentos',
+        85: 'Chubascos de nieve débiles', 86: 'Chubascos de nieve fuertes',
+        95: 'Tormenta', 96: 'Tormenta con granizo débil', 99: 'Tormenta con granizo fuerte',
+    },
 };
+
+function getWmoDesc(code) {
+    const langDesc = wmoLocale[state.lang];
+    if (langDesc && langDesc[code] !== undefined) return langDesc[code];
+    return wmoLocale.en[code] || '';
+}
 
 const wmoIconsSimple = {
     0: '&#x2600;&#xFE0F;', 1: '&#x1F324;&#xFE0F;', 2: '&#x26C5;', 3: '&#x2601;&#xFE0F;',
@@ -801,10 +835,16 @@ function renderWeather() {
     document.getElementById('country').textContent = state.country || '';
 
     const code = c.weather_code != null ? c.weather_code : 0;
-    const desc = wmoDescriptions[code] || '';
+    const desc = getWmoDesc(code);
     document.getElementById('weatherDesc').textContent = desc;
 
-    document.getElementById('weatherIcon').innerHTML = wmoIcons[code] || wmoIconsSimple[code] || '';
+    const night = isNight();
+    const nightClear = [0, 1];
+    if (night && nightClear.includes(code)) {
+        document.getElementById('weatherIcon').innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="80" height="80"><path d="M60 15 Q85 35 80 60 Q75 85 50 80 Q35 88 20 78 Q10 65 15 50 Q18 30 40 22 Q50 12 60 15" fill="#E0E0F0"/><circle cx="65" cy="35" r="8" fill="#D0D0E8" opacity="0.3"/></svg>';
+    } else {
+        document.getElementById('weatherIcon').innerHTML = wmoIcons[code] || wmoIconsSimple[code] || '';
+    }
 
     document.getElementById('temperature').textContent = formatTemp(c.temperature_2m);
 
@@ -836,6 +876,7 @@ function renderWeather() {
     document.getElementById('pressure').textContent = c.pressure_msl != null ? Math.round(c.pressure_msl) : '--';
 
     updateWeatherBackground();
+    updateClock();
     applyLanguage();
 }
 
@@ -922,6 +963,15 @@ function formatTimeStr(dateStr) {
     if (!dateStr) return '--';
     const d = new Date(dateStr);
     return d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0');
+}
+
+function updateClock() {
+    const el = document.getElementById('localTime');
+    if (!el) return;
+    const now = new Date();
+    const h = now.getHours().toString().padStart(2, '0');
+    const m = now.getMinutes().toString().padStart(2, '0');
+    el.textContent = `${h}:${m}`;
 }
 
 // Radar state
@@ -1255,4 +1305,5 @@ document.querySelectorAll('.unit-btn').forEach(btn => {
 
 showWelcome();
 createParticles();
-getLocation();
+updateClock();
+setInterval(updateClock, 1000);

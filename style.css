@@ -363,6 +363,14 @@ body {
     gap: 0.3rem;
 }
 
+.local-time {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 0.5rem;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+}
+
 .weather-secondary {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
