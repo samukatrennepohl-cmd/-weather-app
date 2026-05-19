@@ -70,77 +70,351 @@ const wmoIconsSimple = {
     95: '&#x26C8;&#xFE0F;', 96: '&#x26C8;&#xFE0F;', 99: '&#x26C8;&#xFE0F;',
 };
 
-const i18n = {
-    en: {
-        feelsLike: 'Feels Like',
-        humidity: 'Humidity',
-        wind: 'Wind',
-        pressure: 'Pressure',
-        sunrise: 'Sunrise',
-        sunset: 'Sunset',
-        forecastTitle: '5-Day Forecast',
-        searchPlaceholder: 'Search for a city...',
-        welcomeTitle: 'Welcome to Weather App',
-        welcomeDesc: 'Search for a city to get started, or allow location access.',
-        loading: 'Loading...',
-        alertsTitle: 'Weather Alerts',
-        alertsNone: 'No active weather alerts',
-        severityExtreme: 'Extreme',
-        severityWarning: 'Warning',
-        severityWatch: 'Watch',
-        severityAdvisory: 'Advisory',
-        errorNotFound: 'City not found. Please try again.',
-        errorGeneric: 'Something went wrong. Please try again.',
-        errorLocation: 'Unable to get your location. Please search for a city.',
-        footer: 'Weather App',
-    },
+const i18nBase = {
+    feelsLike: 'Feels Like',
+    humidity: 'Humidity',
+    wind: 'Wind',
+    pressure: 'Pressure',
+    sunrise: 'Sunrise',
+    sunset: 'Sunset',
+    forecastTitle: '15-Day Forecast',
+    searchPlaceholder: 'Search for a city...',
+    welcomeTitle: 'Welcome to Weather App',
+    welcomeDesc: 'Search for a city to get started, or allow location access.',
+    loading: 'Loading...',
+    alertsTitle: 'Weather Alerts',
+    alertsNone: 'No active weather alerts',
+    severityExtreme: 'Extreme',
+    severityWarning: 'Warning',
+    severityWatch: 'Watch',
+    severityAdvisory: 'Advisory',
+    errorNotFound: 'City not found. Please try again.',
+    errorGeneric: 'Something went wrong. Please try again.',
+    errorLocation: 'Unable to get your location. Please search for a city.',
+    footer: 'Weather App',
+    forecastNote: 'Forecasts beyond 2-3 days are subject to change.',
+    radarTitle: 'Radar',
+};
+
+const i18nTranslations = {
     pt: {
-        feelsLike: 'Sensação',
-        humidity: 'Umidade',
-        wind: 'Vento',
-        pressure: 'Pressão',
-        sunrise: 'Nascer do Sol',
-        sunset: 'Pôr do Sol',
-        forecastTitle: 'Previsão de 5 Dias',
-        searchPlaceholder: 'Buscar cidade...',
-        welcomeTitle: 'Bem-vindo ao Weather App',
-        welcomeDesc: 'Busque uma cidade para começar ou permita acesso à localização.',
-        loading: 'Carregando...',
-        alertsTitle: 'Alertas Meteorológicos',
-        alertsNone: 'Nenhum alerta meteorológico ativo',
-        severityExtreme: 'Extremo',
-        severityWarning: 'Perigo',
-        severityWatch: 'Monitoramento',
-        severityAdvisory: 'Aviso',
+        feelsLike: 'Sensação', humidity: 'Umidade', wind: 'Vento',
+        pressure: 'Pressão', sunrise: 'Nascer do Sol', sunset: 'Pôr do Sol',
+        forecastTitle: 'Previsão de 15 Dias', searchPlaceholder: 'Buscar cidade...',
+        welcomeTitle: 'Bem-vindo ao Weather App', welcomeDesc: 'Busque uma cidade para começar ou permita acesso à localização.',
+        loading: 'Carregando...', alertsTitle: 'Alertas Meteorológicos',
+        alertsNone: 'Nenhum alerta meteorológico ativo', severityExtreme: 'Extremo',
+        severityWarning: 'Perigo', severityWatch: 'Monitoramento', severityAdvisory: 'Aviso',
         errorNotFound: 'Cidade não encontrada. Tente novamente.',
         errorGeneric: 'Algo deu errado. Tente novamente.',
         errorLocation: 'Não foi possível obter sua localização. Busque uma cidade.',
-        footer: 'Weather App',
+        footer: 'Weather App', forecastNote: 'Previsões além de 2-3 dias estão sujeitas a alterações.',
     },
     es: {
-        feelsLike: 'Sensación',
-        humidity: 'Humedad',
-        wind: 'Viento',
-        pressure: 'Presión',
-        sunrise: 'Amanecer',
-        sunset: 'Atardecer',
-        forecastTitle: 'Pronóstico de 5 Días',
-        searchPlaceholder: 'Buscar ciudad...',
-        welcomeTitle: 'Bienvenido a Weather App',
-        welcomeDesc: 'Busque una ciudad para comenzar o permita el acceso a la ubicación.',
-        loading: 'Cargando...',
-        alertsTitle: 'Alertas Meteorológicas',
-        alertsNone: 'No hay alertas meteorológicas activas',
-        severityExtreme: 'Extremo',
-        severityWarning: 'Peligro',
-        severityWatch: 'Vigilancia',
-        severityAdvisory: 'Aviso',
+        feelsLike: 'Sensación', humidity: 'Humedad', wind: 'Viento',
+        pressure: 'Presión', sunrise: 'Amanecer', sunset: 'Atardecer',
+        forecastTitle: 'Pronóstico de 15 Días', searchPlaceholder: 'Buscar ciudad...',
+        welcomeTitle: 'Bienvenido a Weather App', welcomeDesc: 'Busque una ciudad para comenzar o permita el acceso a la ubicación.',
+        loading: 'Cargando...', alertsTitle: 'Alertas Meteorológicas',
+        alertsNone: 'No hay alertas meteorológicas activas', severityExtreme: 'Extremo',
+        severityWarning: 'Peligro', severityWatch: 'Vigilancia', severityAdvisory: 'Aviso',
         errorNotFound: 'Ciudad no encontrada. Intente de nuevo.',
         errorGeneric: 'Algo salió mal. Intente de nuevo.',
         errorLocation: 'No se pudo obtener su ubicación. Busque una ciudad.',
-        footer: 'Weather App',
+        footer: 'Weather App', forecastNote: 'Los pronósticos más allá de 2-3 días están sujetos a cambios.',
+    },
+    fr: {
+        feelsLike: 'Ressenti', humidity: 'Humidité', wind: 'Vent',
+        pressure: 'Pression', sunrise: 'Lever du soleil', sunset: 'Coucher du soleil',
+        forecastTitle: 'Prévisions 15 Jours', searchPlaceholder: 'Rechercher une ville...',
+        welcomeTitle: 'Bienvenue sur Weather App', welcomeDesc: 'Recherchez une ville ou autorisez l\'accès à votre position.',
+        loading: 'Chargement...', alertsTitle: 'Alertes Météo',
+        alertsNone: 'Aucune alerte météo active', severityExtreme: 'Extrême',
+        severityWarning: 'Avertissement', severityWatch: 'Surveillance', severityAdvisory: 'Avis',
+        errorNotFound: 'Ville introuvable. Veuillez réessayer.',
+        errorGeneric: 'Une erreur est survenue. Veuillez réessayer.',
+        errorLocation: 'Impossible d\'obtenir votre position. Recherchez une ville.',
+        footer: 'Weather App', forecastNote: 'Les prévisions au-delà de 2-3 jours sont susceptibles de changer.',
+    },
+    de: {
+        feelsLike: 'Gefühlt', humidity: 'Luftfeuchtigkeit', wind: 'Wind',
+        pressure: 'Luftdruck', sunrise: 'Sonnenaufgang', sunset: 'Sonnenuntergang',
+        forecastTitle: '15-Tage-Vorhersage', searchPlaceholder: 'Stadt suchen...',
+        welcomeTitle: 'Willkommen bei Weather App', welcomeDesc: 'Suchen Sie eine Stadt oder erlauben Sie den Standortzugriff.',
+        loading: 'Lädt...', alertsTitle: 'Wetterwarnungen',
+        alertsNone: 'Keine aktiven Wetterwarnungen', severityExtreme: 'Extrem',
+        severityWarning: 'Warnung', severityWatch: 'Beobachtung', severityAdvisory: 'Hinweis',
+        errorNotFound: 'Stadt nicht gefunden. Bitte versuchen Sie es erneut.',
+        errorGeneric: 'Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.',
+        errorLocation: 'Standort konnte nicht ermittelt werden. Suchen Sie eine Stadt.',
+        footer: 'Weather App', forecastNote: 'Vorhersagen über 2-3 Tage hinaus können sich ändern.',
+    },
+    it: {
+        feelsLike: 'Percepito', humidity: 'Umidità', wind: 'Vento',
+        pressure: 'Pressione', sunrise: 'Alba', sunset: 'Tramonto',
+        forecastTitle: 'Previsioni 15 Giorni', searchPlaceholder: 'Cerca città...',
+        welcomeTitle: 'Benvenuto su Weather App', welcomeDesc: 'Cerca una città o autorizza l\'accesso alla posizione.',
+        loading: 'Caricamento...', alertsTitle: 'Allerte Meteo',
+        alertsNone: 'Nessuna allerta meteo attiva', severityExtreme: 'Estrema',
+        severityWarning: 'Pericolo', severityWatch: 'Monitoraggio', severityAdvisory: 'Avviso',
+        errorNotFound: 'Città non trovata. Riprova.',
+        errorGeneric: 'Qualcosa è andato storto. Riprova.',
+        errorLocation: 'Impossibile ottenere la posizione. Cerca una città.',
+        footer: 'Weather App', forecastNote: 'Le previsioni oltre 2-3 giorni sono soggette a cambiamenti.',
+    },
+    nl: {
+        feelsLike: 'Gevoelstemperatuur', humidity: 'Luchtvochtigheid', wind: 'Wind',
+        pressure: 'Luchtdruk', sunrise: 'Zonsopgang', sunset: 'Zonsondergang',
+        forecastTitle: '15-Dagen Verwachting', searchPlaceholder: 'Zoek een stad...',
+        welcomeTitle: 'Welkom bij Weather App', welcomeDesc: 'Zoek een stad of sta locatietoegang toe.',
+        loading: 'Laden...', alertsTitle: 'Weeralarmen',
+        alertsNone: 'Geen actieve weeralarmen', severityExtreme: 'Extreem',
+        severityWarning: 'Waarschuwing', severityWatch: 'Alert', severityAdvisory: 'Advies',
+        errorNotFound: 'Stad niet gevonden. Probeer het opnieuw.',
+        errorGeneric: 'Er is iets misgegaan. Probeer het opnieuw.',
+        errorLocation: 'Kan uw locatie niet bepalen. Zoek een stad.',
+        footer: 'Weather App', forecastNote: 'Verwachtingen voorbij 2-3 dagen kunnen veranderen.',
+    },
+    pl: {
+        feelsLike: 'Odczuwalna', humidity: 'Wilgotność', wind: 'Wiatr',
+        pressure: 'Ciśnienie', sunrise: 'Wschód słońca', sunset: 'Zachód słońca',
+        forecastTitle: 'Prognoza 15-Dniowa', searchPlaceholder: 'Szukaj miasta...',
+        welcomeTitle: 'Witaj w Weather App', welcomeDesc: 'Wyszukaj miasto lub zezwól na dostęp do lokalizacji.',
+        loading: 'Ładowanie...', alertsTitle: 'Alerty Pogodowe',
+        alertsNone: 'Brak aktywnych alertów pogodowych', severityExtreme: 'Ekstremalny',
+        severityWarning: 'Ostrzeżenie', severityWatch: 'Monitorowanie', severityAdvisory: 'Zalecenie',
+        errorNotFound: 'Nie znaleziono miasta. Spróbuj ponownie.',
+        errorGeneric: 'Coś poszło nie tak. Spróbuj ponownie.',
+        errorLocation: 'Nie można uzyskać lokalizacji. Wyszukaj miasto.',
+        footer: 'Weather App', forecastNote: 'Prognozy powyżej 2-3 dni mogą ulec zmianie.',
+    },
+    ru: {
+        feelsLike: 'Ощущается', humidity: 'Влажность', wind: 'Ветер',
+        pressure: 'Давление', sunrise: 'Восход', sunset: 'Закат',
+        forecastTitle: 'Прогноз на 15 Дней', searchPlaceholder: 'Поиск города...',
+        welcomeTitle: 'Добро пожаловать в Weather App', welcomeDesc: 'Найдите город или разрешите доступ к местоположению.',
+        loading: 'Загрузка...', alertsTitle: 'Погодные Предупреждения',
+        alertsNone: 'Нет активных предупреждений', severityExtreme: 'Экстремальный',
+        severityWarning: 'Предупреждение', severityWatch: 'Наблюдение', severityAdvisory: 'Уведомление',
+        errorNotFound: 'Город не найден. Попробуйте снова.',
+        errorGeneric: 'Что-то пошло не так. Попробуйте снова.',
+        errorLocation: 'Не удалось определить местоположение. Найдите город.',
+        footer: 'Weather App', forecastNote: 'Прогнозы на 2-3 дня могут измениться.',
+    },
+    ja: {
+        feelsLike: '体感温度', humidity: '湿度', wind: '風',
+        pressure: '気圧', sunrise: '日の出', sunset: '日の入り',
+        forecastTitle: '15日間予報', searchPlaceholder: '都市を検索...',
+        welcomeTitle: 'Weather Appへようこそ', welcomeDesc: '都市を検索するか、位置情報へのアクセスを許可してください。',
+        loading: '読み込み中...', alertsTitle: '気象警報',
+        alertsNone: 'アクティブな気象警報はありません', severityExtreme: '極端',
+        severityWarning: '警報', severityWatch: '注意', severityAdvisory: 'アドバイザリー',
+        errorNotFound: '都市が見つかりませんでした。もう一度お試しください。',
+        errorGeneric: 'エラーが発生しました。もう一度お試しください。',
+        errorLocation: '位置情報を取得できませんでした。都市を検索してください。',
+        footer: 'Weather App', forecastNote: '2-3日以上の予報は変更される可能性があります。',
+    },
+    ko: {
+        feelsLike: '체감온도', humidity: '습도', wind: '바람',
+        pressure: '기압', sunrise: '일출', sunset: '일몰',
+        forecastTitle: '15일 예보', searchPlaceholder: '도시 검색...',
+        welcomeTitle: 'Weather App에 오신 것을 환영합니다', welcomeDesc: '도시를 검색하거나 위치 접근을 허용하세요.',
+        loading: '로딩 중...', alertsTitle: '기상 특보',
+        alertsNone: '활성 기상 특보 없음', severityExtreme: '극한',
+        severityWarning: '경고', severityWatch: '주의', severityAdvisory: '권고',
+        errorNotFound: '도시를 찾을 수 없습니다. 다시 시도하세요.',
+        errorGeneric: '문제가 발생했습니다. 다시 시도하세요.',
+        errorLocation: '위치를 가져올 수 없습니다. 도시를 검색하세요.',
+        footer: 'Weather App', forecastNote: '2-3일 이후의 예보는 변경될 수 있습니다.',
+    },
+    zh: {
+        feelsLike: '体感温度', humidity: '湿度', wind: '风',
+        pressure: '气压', sunrise: '日出', sunset: '日落',
+        forecastTitle: '15天预报', searchPlaceholder: '搜索城市...',
+        welcomeTitle: '欢迎使用天气应用', welcomeDesc: '搜索城市或允许位置访问。',
+        loading: '加载中...', alertsTitle: '天气警报',
+        alertsNone: '暂无活跃天气警报', severityExtreme: '极端',
+        severityWarning: '警告', severityWatch: '注意', severityAdvisory: '建议',
+        errorNotFound: '未找到城市。请重试。',
+        errorGeneric: '出错了。请重试。',
+        errorLocation: '无法获取您的位置。请搜索城市。',
+        footer: '天气应用', forecastNote: '超过2-3天的预报可能会发生变化。',
+    },
+    ar: {
+        feelsLike: 'الإحساس', humidity: 'الرطوبة', wind: 'الرياح',
+        pressure: 'الضغط', sunrise: 'الشروق', sunset: 'الغروب',
+        forecastTitle: 'توقعات 15 يوم', searchPlaceholder: 'ابحث عن مدينة...',
+        welcomeTitle: 'مرحبًا بك في تطبيق الطقس', welcomeDesc: 'ابحث عن مدينة أو اسمح بالوصول إلى الموقع.',
+        loading: 'جارٍ التحميل...', alertsTitle: 'تنبيهات الطقس',
+        alertsNone: 'لا توجد تنبيهات طقس نشطة', severityExtreme: 'شديد',
+        severityWarning: 'تحذير', severityWatch: 'مراقبة', severityAdvisory: 'إرشاد',
+        errorNotFound: 'المدينة غير موجودة. حاول مرة أخرى.',
+        errorGeneric: 'حدث خطأ ما. حاول مرة أخرى.',
+        errorLocation: 'تعذر الحصول على موقعك. ابحث عن مدينة.',
+        footer: 'تطبيق الطقس', forecastNote: 'التوقعات لأكثر من 2-3 أيام قابلة للتغيير.',
+    },
+    hi: {
+        feelsLike: 'अनुभूति', humidity: 'आर्द्रता', wind: 'हवा',
+        pressure: 'दबाव', sunrise: 'सूर्योदय', sunset: 'सूर्यास्त',
+        forecastTitle: '15 दिन का पूर्वानुमान', searchPlaceholder: 'शहर खोजें...',
+        welcomeTitle: 'Weather App में आपका स्वागत है', welcomeDesc: 'शहर खोजें या स्थान एक्सेस की अनुमति दें।',
+        loading: 'लोड हो रहा है...', alertsTitle: 'मौसम अलर्ट',
+        alertsNone: 'कोई सक्रिय मौसम अलर्ट नहीं', severityExtreme: 'गंभीर',
+        severityWarning: 'चेतावनी', severityWatch: 'निगरानी', severityAdvisory: 'सलाह',
+        errorNotFound: 'शहर नहीं मिला। कृपया पुनः प्रयास करें।',
+        errorGeneric: 'कुछ गलत हो गया। कृपया पुनः प्रयास करें।',
+        errorLocation: 'आपका स्थान प्राप्त नहीं हो सका। कृपया शहर खोजें।',
+        footer: 'Weather App', forecastNote: '2-3 दिनों से अधिक के पूर्वानुमान बदल सकते हैं।',
+    },
+    tr: {
+        feelsLike: 'Hissedilen', humidity: 'Nem', wind: 'Rüzgar',
+        pressure: 'Basınç', sunrise: 'Gün Doğumu', sunset: 'Gün Batımı',
+        forecastTitle: '15 Günlük Tahmin', searchPlaceholder: 'Şehir ara...',
+        welcomeTitle: 'Weather App\'a Hoş Geldiniz', welcomeDesc: 'Bir şehir arayın veya konum erişimine izin verin.',
+        loading: 'Yükleniyor...', alertsTitle: 'Hava Uyarıları',
+        alertsNone: 'Aktif hava uyarısı yok', severityExtreme: 'Aşırı',
+        severityWarning: 'Uyarı', severityWatch: 'İzleme', severityAdvisory: 'Tavsiye',
+        errorNotFound: 'Şehir bulunamadı. Lütfen tekrar deneyin.',
+        errorGeneric: 'Bir şeyler yanlış gitti. Lütfen tekrar deneyin.',
+        errorLocation: 'Konumunuz alınamadı. Lütfen bir şehir arayın.',
+        footer: 'Weather App', forecastNote: '2-3 gün ötesindeki tahminler değişebilir.',
+    },
+    sv: {
+        feelsLike: 'Känns som', humidity: 'Luftfuktighet', wind: 'Vind',
+        pressure: 'Tryck', sunrise: 'Soluppgång', sunset: 'Solnedgång',
+        forecastTitle: '15-Dagars Prognos', searchPlaceholder: 'Sök stad...',
+        welcomeTitle: 'Välkommen till Weather App', welcomeDesc: 'Sök efter en stad eller tillåt platsåtkomst.',
+        loading: 'Laddar...', alertsTitle: 'Vädervarningar',
+        alertsNone: 'Inga aktiva vädervarningar', severityExtreme: 'Extrem',
+        severityWarning: 'Varning', severityWatch: 'Bevakning', severityAdvisory: 'Rådgivning',
+        errorNotFound: 'Staden hittades inte. Försök igen.',
+        errorGeneric: 'Något gick fel. Försök igen.',
+        errorLocation: 'Kunde inte hitta din plats. Sök efter en stad.',
+        footer: 'Weather App', forecastNote: 'Prognoser längre än 2-3 dagar kan ändras.',
+    },
+    da: {
+        feelsLike: 'Føles som', humidity: 'Luftfugtighed', wind: 'Vind',
+        pressure: 'Tryk', sunrise: 'Solopgang', sunset: 'Solnedgang',
+        forecastTitle: '15-Dages Prognose', searchPlaceholder: 'Søg by...',
+        welcomeTitle: 'Velkommen til Weather App', welcomeDesc: 'Søg efter en by eller tillad placering.',
+        loading: 'Indlæser...', alertsTitle: 'Vejradvarsler',
+        alertsNone: 'Ingen aktive vejradvarsler', severityExtreme: 'Ekstrem',
+        severityWarning: 'Advarsel', severityWatch: 'Overvågning', severityAdvisory: 'Anbefaling',
+        errorNotFound: 'By ikke fundet. Prøv igen.',
+        errorGeneric: 'Noget gik galt. Prøv igen.',
+        errorLocation: 'Kunne ikke få din placering. Søg efter en by.',
+        footer: 'Weather App', forecastNote: 'Prognoser ud over 2-3 dage kan ændre sig.',
+    },
+    fi: {
+        feelsLike: 'Tuntuu kuin', humidity: 'Kosteus', wind: 'Tuuli',
+        pressure: 'Paine', sunrise: 'Auringonnousu', sunset: 'Auringonlasku',
+        forecastTitle: '15 Päivän Ennuste', searchPlaceholder: 'Hae kaupunkia...',
+        welcomeTitle: 'Tervetuloa Weather Appiin', welcomeDesc: 'Hae kaupunkia tai salli sijaintisi.',
+        loading: 'Ladataan...', alertsTitle: 'Säävaroitukset',
+        alertsNone: 'Ei aktiivisia säävaroituksia', severityExtreme: 'Äärimmäinen',
+        severityWarning: 'Varoitus', severityWatch: 'Seuranta', severityAdvisory: 'Ohje',
+        errorNotFound: 'Kaupunkia ei löytynyt. Yritä uudelleen.',
+        errorGeneric: 'Jokin meni pieleen. Yritä uudelleen.',
+        errorLocation: 'Sijaintiasi ei voitu hakea. Hae kaupunkia.',
+        footer: 'Weather App', forecastNote: 'Yli 2-3 päivän ennusteet voivat muuttua.',
+    },
+    no: {
+        feelsLike: 'Føles som', humidity: 'Luftfuktighet', wind: 'Vind',
+        pressure: 'Trykk', sunrise: 'Soloppgang', sunset: 'Solnedgang',
+        forecastTitle: '15-Dagers Varsel', searchPlaceholder: 'Søk by...',
+        welcomeTitle: 'Velkommen til Weather App', welcomeDesc: 'Søk etter en by eller tillat stedstilgang.',
+        loading: 'Laster...', alertsTitle: 'Værvarsler',
+        alertsNone: 'Ingen aktive værvarsler', severityExtreme: 'Ekstrem',
+        severityWarning: 'Advarsel', severityWatch: 'Overvåking', severityAdvisory: 'Råd',
+        errorNotFound: 'By ikke funnet. Prøv igjen.',
+        errorGeneric: 'Noe gikk galt. Prøv igjen.',
+        errorLocation: 'Kunne ikke få posisjonen din. Søk etter en by.',
+        footer: 'Weather App', forecastNote: 'Varsler utover 2-3 dager kan endres.',
+    },
+    cs: {
+        feelsLike: 'Pocitová teplota', humidity: 'Vlhkost', wind: 'Vítr',
+        pressure: 'Tlak', sunrise: 'Východ slunce', sunset: 'Západ slunce',
+        forecastTitle: '15denní Předpověď', searchPlaceholder: 'Hledat město...',
+        welcomeTitle: 'Vítejte v Weather App', welcomeDesc: 'Vyhledejte město nebo povolte přístup k poloze.',
+        loading: 'Načítání...', alertsTitle: 'Výstrahy Počasí',
+        alertsNone: 'Žádné aktivní výstrahy', severityExtreme: 'Extrémní',
+        severityWarning: 'Varování', severityWatch: 'Sledování', severityAdvisory: 'Doporučení',
+        errorNotFound: 'Město nenalezeno. Zkuste to znovu.',
+        errorGeneric: 'Něco se pokazilo. Zkuste to znovu.',
+        errorLocation: 'Nelze získat vaši polohu. Vyhledejte město.',
+        footer: 'Weather App', forecastNote: 'Předpovědi na více než 2-3 dny se mohou změnit.',
+    },
+    ro: {
+        feelsLike: 'Perceput', humidity: 'Umiditate', wind: 'Vânt',
+        pressure: 'Presiune', sunrise: 'Răsărit', sunset: 'Apus',
+        forecastTitle: 'Prognoză 15 Zile', searchPlaceholder: 'Caută oraș...',
+        welcomeTitle: 'Bun venit la Weather App', welcomeDesc: 'Căutați un oraș sau permiteți accesul la locație.',
+        loading: 'Se încarcă...', alertsTitle: 'Alerte Meteo',
+        alertsNone: 'Nicio alertă meteo activă', severityExtreme: 'Extrem',
+        severityWarning: 'Pericol', severityWatch: 'Monitorizare', severityAdvisory: 'Aviz',
+        errorNotFound: 'Orașul nu a fost găsit. Încercați din nou.',
+        errorGeneric: 'Ceva a mers greșit. Încercați din nou.',
+        errorLocation: 'Nu s-a putut obține locația. Căutați un oraș.',
+        footer: 'Weather App', forecastNote: 'Prognozele peste 2-3 zile se pot modifica.',
+    },
+    el: {
+        feelsLike: 'Αίσθηση', humidity: 'Υγρασία', wind: 'Άνεμος',
+        pressure: 'Πίεση', sunrise: 'Ανατολή', sunset: 'Δύση',
+        forecastTitle: 'Πρόβλεψη 15 Ημερών', searchPlaceholder: 'Αναζήτηση πόλης...',
+        welcomeTitle: 'Καλώς ήρθατε στο Weather App', welcomeDesc: 'Αναζητήστε μια πόλη ή επιτρέψτε την πρόσβαση τοποθεσίας.',
+        loading: 'Φόρτωση...', alertsTitle: 'Μετεωρολογικές Προειδοποιήσεις',
+        alertsNone: 'Καμία ενεργή προειδοποίηση', severityExtreme: 'Ακραίο',
+        severityWarning: 'Προειδοποίηση', severityWatch: 'Παρακολούθηση', severityAdvisory: 'Συμβουλή',
+        errorNotFound: 'Η πόλη δεν βρέθηκε. Δοκιμάστε ξανά.',
+        errorGeneric: 'Κάτι πήγε στραβά. Δοκιμάστε ξανά.',
+        errorLocation: 'Δεν ήταν δυνατή η λήψη της τοποθεσίας σας. Αναζητήστε μια πόλη.',
+        footer: 'Weather App', forecastNote: 'Οι προβλέψεις πέραν των 2-3 ημερών υπόκεινται σε αλλαγές.',
+    },
+    th: {
+        feelsLike: 'รู้สึกเหมือน', humidity: 'ความชื้น', wind: 'ลม',
+        pressure: 'ความดัน', sunrise: 'พระอาทิตย์ขึ้น', sunset: 'พระอาทิตย์ตก',
+        forecastTitle: 'พยากรณ์ 15 วัน', searchPlaceholder: 'ค้นหาเมือง...',
+        welcomeTitle: 'ยินดีต้อนรับสู่ Weather App', welcomeDesc: 'ค้นหาเมืองหรืออนุญาตการเข้าถึงตำแหน่งที่ตั้ง',
+        loading: 'กำลังโหลด...', alertsTitle: 'การแจ้งเตือนสภาพอากาศ',
+        alertsNone: 'ไม่มีการแจ้งเตือนสภาพอากาศที่ใช้งานอยู่', severityExtreme: 'รุนแรงมาก',
+        severityWarning: 'เตือนภัย', severityWatch: 'เฝ้าระวัง', severityAdvisory: 'แนะนำ',
+        errorNotFound: 'ไม่พบเมือง กรุณาลองอีกครั้ง',
+        errorGeneric: 'เกิดข้อผิดพลาด กรุณาลองอีกครั้ง',
+        errorLocation: 'ไม่สามารถรับตำแหน่งของคุณได้ กรุณาค้นหาเมือง',
+        footer: 'Weather App', forecastNote: 'การพยากรณ์เกิน 2-3 วันอาจมีการเปลี่ยนแปลง',
+    },
+    vi: {
+        feelsLike: 'Cảm giác như', humidity: 'Độ ẩm', wind: 'Gió',
+        pressure: 'Áp suất', sunrise: 'Bình minh', sunset: 'Hoàng hôn',
+        forecastTitle: 'Dự báo 15 Ngày', searchPlaceholder: 'Tìm kiếm thành phố...',
+        welcomeTitle: 'Chào mừng đến với Weather App', welcomeDesc: 'Tìm kiếm thành phố hoặc cho phép truy cập vị trí.',
+        loading: 'Đang tải...', alertsTitle: 'Cảnh báo Thời tiết',
+        alertsNone: 'Không có cảnh báo thời tiết nào đang hoạt động', severityExtreme: 'Cực kỳ',
+        severityWarning: 'Nguy hiểm', severityWatch: 'Theo dõi', severityAdvisory: 'Khuyến cáo',
+        errorNotFound: 'Không tìm thấy thành phố. Vui lòng thử lại.',
+        errorGeneric: 'Đã xảy ra lỗi. Vui lòng thử lại.',
+        errorLocation: 'Không thể lấy vị trí của bạn. Vui lòng tìm kiếm thành phố.',
+        footer: 'Weather App', forecastNote: 'Dự báo sau 2-3 ngày có thể thay đổi.',
+    },
+    he: {
+        feelsLike: 'מרגיש כמו', humidity: 'לחות', wind: 'רוח',
+        pressure: 'לחץ', sunrise: 'זריחה', sunset: 'שקיעה',
+        forecastTitle: 'תחזית 15 יום', searchPlaceholder: 'חפש עיר...',
+        welcomeTitle: 'ברוכים הבאים ל-Weather App', welcomeDesc: 'חפש עיר או אפשר גישה למיקום.',
+        loading: 'טוען...', alertsTitle: 'התראות מזג אוויר',
+        alertsNone: 'אין התראות מזג אוויר פעילות', severityExtreme: 'קיצוני',
+        severityWarning: 'אזהרה', severityWatch: 'מעקב', severityAdvisory: 'ייעוץ',
+        errorNotFound: 'העיר לא נמצאה. נסה שוב.',
+        errorGeneric: 'משהו השתבש. נסה שוב.',
+        errorLocation: 'לא ניתן לקבל את מיקומך. חפש עיר.',
+        footer: 'Weather App', forecastNote: 'תחזיות מעבר ל-2-3 ימים עשויות להשתנות.',
     },
 };
+
+const i18n = {};
+for (const code of ['en', ...Object.keys(i18nTranslations)]) {
+    i18n[code] = { ...i18nBase, ...i18nTranslations[code] };
+}
 
 const cityOverride = {
     'miami': 'US',
@@ -212,7 +486,7 @@ async function fetchWeather(city) {
         state.country = overrideCountry || countryCode;
         state.cityName = best.name || city;
 
-        const openMeteoUrl = `https://api.open-meteo.com/v1/forecast?latitude=${state.lat}&longitude=${state.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,pressure_msl&daily=temperature_2m_max,temperature_2m_min,weather_code,sunrise,sunset&timezone=auto&forecast_days=6`;
+        const openMeteoUrl = `https://api.open-meteo.com/v1/forecast?latitude=${state.lat}&longitude=${state.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,pressure_msl&daily=temperature_2m_max,temperature_2m_min,weather_code,sunrise,sunset&timezone=auto&forecast_days=16`;
         const omResp = await fetch(openMeteoUrl);
         if (!omResp.ok) { showError(i18n[state.lang].errorGeneric); showWelcome(); return; }
         const data = await omResp.json();
@@ -224,6 +498,7 @@ async function fetchWeather(city) {
         renderForecast();
 
         await fetchAlerts(state.lat, state.lon, state.country, state.cityName);
+        await fetchRadar(state.lat, state.lon);
 
         hideLoading();
         showWeather();
@@ -560,6 +835,7 @@ function renderWeather() {
 
     document.getElementById('pressure').textContent = c.pressure_msl != null ? Math.round(c.pressure_msl) : '--';
 
+    updateWeatherBackground();
     applyLanguage();
 }
 
@@ -570,16 +846,39 @@ function renderForecast() {
     if (!state.forecast || !state.forecast.daily || !state.forecast.daily.time) return;
 
     const daily = state.forecast.daily;
-    const dayNames = state.lang === 'pt'
-        ? ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
-        : state.lang === 'es'
-        ? ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb']
-        : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const dayNamesMap = {
+        en: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+        pt: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
+        es: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'],
+        fr: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'],
+        de: ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'],
+        it: ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab'],
+        nl: ['Zo', 'Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za'],
+        pl: ['Nd', 'Pn', 'Wt', 'Śr', 'Cz', 'Pt', 'Sb'],
+        ru: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+        ja: ['日', '月', '火', '水', '木', '金', '土'],
+        ko: ['일', '월', '화', '수', '목', '금', '토'],
+        zh: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
+        ar: ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'],
+        hi: ['रवि', 'सोम', 'मंगल', 'बुध', 'गुरु', 'शुक्र', 'शनि'],
+        tr: ['Paz', 'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt'],
+        sv: ['Sön', 'Mån', 'Tis', 'Ons', 'Tor', 'Fre', 'Lör'],
+        da: ['Søn', 'Man', 'Tir', 'Ons', 'Tor', 'Fre', 'Lør'],
+        fi: ['Su', 'Ma', 'Ti', 'Ke', 'To', 'Pe', 'La'],
+        no: ['Søn', 'Man', 'Tir', 'Ons', 'Tor', 'Fre', 'Lør'],
+        cs: ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So'],
+        ro: ['Du', 'Lu', 'Ma', 'Mi', 'Jo', 'Vi', 'Sâ'],
+        el: ['Κυρ', 'Δευ', 'Τρί', 'Τετ', 'Πέμ', 'Παρ', 'Σάβ'],
+        th: ['อา', 'จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส'],
+        vi: ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'],
+        he: ['א\'', 'ב\'', 'ג\'', 'ד\'', 'ה\'', 'ו\'', 'ש\''],
+    };
+    const dayNames = dayNamesMap[state.lang] || dayNamesMap.en;
 
     const todayStr = new Date().toISOString().split('T')[0];
     let startIdx = daily.time[0] === todayStr ? 1 : 0;
 
-    for (let i = startIdx; i < Math.min(daily.time.length, startIdx + 5); i++) {
+    for (let i = startIdx; i < Math.min(daily.time.length, startIdx + 15); i++) {
         const date = new Date(daily.time[i] + 'T12:00:00');
         const dayName = dayNames[date.getDay()];
         const code = daily.weather_code[i] != null ? daily.weather_code[i] : 0;
@@ -607,10 +906,145 @@ function formatTemp(celsius) {
     }
 }
 
+function isNight() {
+    const d = state.weather?.daily;
+    if (!d?.sunrise?.[0] || !d?.sunset?.[0] || !state.weather?.current?.time) return false;
+    const now = state.weather.current.time;
+    const rise = d.sunrise[0];
+    const set = d.sunset[0];
+    const getH = s => parseInt((s.split('T')[1] || s).split(':')[0]);
+    const h = getH(now), rh = getH(rise), sh = getH(set);
+    if (isNaN(h) || isNaN(rh) || isNaN(sh)) return false;
+    return h < rh || h >= sh;
+}
+
 function formatTimeStr(dateStr) {
     if (!dateStr) return '--';
     const d = new Date(dateStr);
     return d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0');
+}
+
+// Radar state
+let radarFrames = [];
+let radarCurrentFrame = 0;
+let radarInterval = null;
+let radarPlaying = false;
+let radarLoaded = false;
+
+async function fetchRadar(lat, lon) {
+    const radarDisplay = document.getElementById('radarDisplay');
+    if (!radarDisplay) return;
+    try {
+        const resp = await fetch(`https://api.rainviewer.com/public/weather-maps.json`);
+        if (!resp.ok) return;
+        const data = await resp.json();
+        if (!data.radar?.past?.length) { radarDisplay.classList.add('hidden'); return; }
+        const frames = data.radar.past.slice(-30);
+        const tileSize = 256;
+        const bounds = 5;
+        const x = Math.round((lon + 180) / 360 * Math.pow(2, bounds));
+        const y = Math.round((1 - Math.log(Math.tan(lat * Math.PI / 180) + 1 / Math.cos(lat * Math.PI / 180)) / Math.PI) / 2 * Math.pow(2, bounds));
+        radarFrames = frames.map(f => ({
+            time: f.time,
+            url: `https://tilecache.rainviewer.com${f.path}/256/${bounds}/${x}/${y}.png`
+        }));
+        radarLoaded = true;
+        radarDisplay.classList.remove('hidden');
+        const canvas = document.getElementById('radarCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        canvas.width = canvas.offsetWidth * 2;
+        canvas.height = canvas.offsetHeight * 2;
+        ctx.scale(2, 2);
+        radarCurrentFrame = radarFrames.length - 1;
+        loadRadarFrame(radarCurrentFrame);
+    } catch (e) {
+        const radarDisplay2 = document.getElementById('radarDisplay');
+        if (radarDisplay2) radarDisplay2.classList.add('hidden');
+    }
+}
+
+function loadRadarFrame(index) {
+    if (!radarFrames.length || index < 0 || index >= radarFrames.length) return;
+    const canvas = document.getElementById('radarCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+        canvas.width = canvas.offsetWidth * 2;
+        canvas.height = canvas.offsetHeight * 2;
+        ctx.scale(2, 2);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        const gradient = ctx.createRadialGradient(
+            canvas.offsetWidth / 2, canvas.offsetHeight / 2, 0,
+            canvas.offsetWidth / 2, canvas.offsetHeight / 2, Math.min(canvas.offsetWidth, canvas.offsetHeight) * 0.7
+        );
+        gradient.addColorStop(0, 'rgba(10, 18, 32, 0)');
+        gradient.addColorStop(1, 'rgba(10, 18, 32, 1)');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, canvas.offsetWidth, canvas.offsetHeight);
+
+        ctx.drawImage(img, canvas.offsetWidth / 2 - 128, canvas.offsetHeight / 2 - 128, 256, 256);
+
+        const ts = document.getElementById('radarTimestamp');
+        if (ts && radarFrames[index]) {
+            const d = new Date(radarFrames[index].time * 1000);
+            ts.textContent = d.toLocaleString(state.lang);
+        }
+    };
+    img.onerror = () => {};
+    img.src = radarFrames[index].url;
+}
+
+function toggleRadarAnimation() {
+    const btn = document.getElementById('radarPlayBtn');
+    if (radarPlaying) {
+        clearInterval(radarInterval);
+        radarPlaying = false;
+        if (btn) btn.innerHTML = '&#9654;';
+    } else {
+        radarPlaying = true;
+        if (btn) btn.innerHTML = '&#10074;&#10074;';
+        radarInterval = setInterval(() => {
+            radarCurrentFrame = (radarCurrentFrame + 1) % radarFrames.length;
+            loadRadarFrame(radarCurrentFrame);
+        }, 200);
+    }
+}
+
+function updateWeatherBackground() {
+    const bg = document.getElementById('weatherBg');
+    if (!bg) return;
+    const code = state.weather?.current?.weather_code;
+    if (code == null) { bg.className = 'weather-bg'; return; }
+    const night = isNight();
+    if (night) { bg.className = 'weather-bg night'; return; }
+    if (code >= 95) { bg.className = 'weather-bg thunderstorm'; return; }
+    if ((code >= 61 && code <= 67) || (code >= 80 && code <= 82)) { bg.className = 'weather-bg rainy'; return; }
+    if ((code >= 71 && code <= 77) || (code >= 85 && code <= 86)) { bg.className = 'weather-bg snowy'; return; }
+    if (code === 45 || code === 48) { bg.className = 'weather-bg foggy'; return; }
+    if (code >= 2) { bg.className = 'weather-bg cloudy'; return; }
+    bg.className = 'weather-bg sunny';
+}
+
+function createParticles() {
+    const container = document.getElementById('particles');
+    if (!container) return;
+    for (let i = 0; i < 50; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        p.style.left = Math.random() * 100 + '%';
+        p.style.bottom = '-10px';
+        p.style.animationDuration = (15 + Math.random() * 25) + 's';
+        p.style.animationDelay = Math.random() * 20 + 's';
+        const size = 1 + Math.random() * 2;
+        p.style.width = size + 'px';
+        p.style.height = size + 'px';
+        p.style.opacity = 0.1 + Math.random() * 0.2;
+        container.appendChild(p);
+    }
 }
 
 function applyLanguage() {
@@ -622,15 +1056,15 @@ function applyLanguage() {
     document.getElementById('lblSunrise').textContent = i18n[state.lang].sunrise;
     document.getElementById('lblSunset').textContent = i18n[state.lang].sunset;
     document.getElementById('forecastTitle').textContent = i18n[state.lang].forecastTitle;
+    document.getElementById('forecastNote').textContent = i18n[state.lang].forecastNote;
     document.getElementById('alertsTitle').textContent = i18n[state.lang].alertsTitle;
+    const radarTitleEl = document.getElementById('radarTitle');
+    if (radarTitleEl) radarTitleEl.textContent = i18n[state.lang].radarTitle;
     document.getElementById('footerPowered').textContent = i18n[state.lang].footer;
 
     if (state.weather) {
         renderAlerts();
     }
-}
-
-function setBackground() {
 }
 
 function showLoading() {
@@ -716,7 +1150,7 @@ async function fetchWeatherByCoords(lat, lon) {
 
         if (!state.cityName) state.cityName = `${lat.toFixed(4)}, ${lon.toFixed(4)}`;
 
-    const openMeteoUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,pressure_msl&daily=temperature_2m_max,temperature_2m_min,weather_code,sunrise,sunset&timezone=auto&forecast_days=6`;
+    const openMeteoUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,pressure_msl&daily=temperature_2m_max,temperature_2m_min,weather_code,sunrise,sunset&timezone=auto&forecast_days=16`;
     try {
         const omResp = await fetch(openMeteoUrl);
         if (omResp.ok) {
@@ -741,7 +1175,8 @@ async function fetchWeatherByCoords(lat, lon) {
     showForecast();
 
     if (state.country) await fetchAlerts(lat, lon, state.country, state.cityName);
-    setBackground();
+    await fetchRadar(state.lat, state.lon);
+    updateWeatherBackground();
 }
 
 async function fetchLocationByIP() {
@@ -798,14 +1233,13 @@ document.getElementById('searchInput').addEventListener('keydown', (e) => {
     }
 });
 
-document.querySelectorAll('.lang-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        state.lang = btn.dataset.lang;
-        applyLanguage();
-    });
+document.getElementById('langSelect').addEventListener('change', (e) => {
+    state.lang = e.target.value;
+    applyLanguage();
 });
+
+const radarBtn = document.getElementById('radarPlayBtn');
+if (radarBtn) radarBtn.addEventListener('click', toggleRadarAnimation);
 
 document.querySelectorAll('.unit-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -820,4 +1254,5 @@ document.querySelectorAll('.unit-btn').forEach(btn => {
 });
 
 showWelcome();
+createParticles();
 getLocation();

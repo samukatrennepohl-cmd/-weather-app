@@ -3,7 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather App</title>
+    <title>Global Weather Forecast & Alerts | Weather App</title>
+    <meta name="description" content="Get real-time weather forecasts, 15-day outlooks, and alerts for any city worldwide. Supports 20+ languages and temperature units.">
+    <meta property="og:title" content="Global Weather Forecast & Alerts">
+    <meta property="og:description" content="Check the weather for any city with this multilingual forecast app featuring radar maps and 15-day forecasts.">
+    <meta property="og:type" content="website">
+    <meta name="theme-color" content="#0a0e1a">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -12,6 +17,7 @@
 <body>
     <div class="app" id="app">
         <div class="weather-bg" id="weatherBg"></div>
+        <div class="particles" id="particles"></div>
 
         <header class="header">
             <div class="search-container">
@@ -23,9 +29,33 @@
             </div>
             <div class="controls">
                 <div class="lang-selector">
-                    <button class="lang-btn active" data-lang="en">EN</button>
-                    <button class="lang-btn" data-lang="pt">PT</button>
-                    <button class="lang-btn" data-lang="es">ES</button>
+                    <select id="langSelect">
+                        <option value="en">English</option>
+                        <option value="pt">Português</option>
+                        <option value="es">Español</option>
+                        <option value="fr">Français</option>
+                        <option value="de">Deutsch</option>
+                        <option value="it">Italiano</option>
+                        <option value="nl">Nederlands</option>
+                        <option value="pl">Polski</option>
+                        <option value="ru">Русский</option>
+                        <option value="ja">日本語</option>
+                        <option value="ko">한국어</option>
+                        <option value="zh">中文</option>
+                        <option value="ar">العربية</option>
+                        <option value="hi">हिन्दी</option>
+                        <option value="tr">Türkçe</option>
+                        <option value="sv">Svenska</option>
+                        <option value="da">Dansk</option>
+                        <option value="fi">Suomi</option>
+                        <option value="no">Norsk</option>
+                        <option value="cs">Čeština</option>
+                        <option value="ro">Română</option>
+                        <option value="el">Ελληνικά</option>
+                        <option value="th">ไทย</option>
+                        <option value="vi">Tiếng Việt</option>
+                        <option value="he">עברית</option>
+                    </select>
                 </div>
                 <div class="unit-toggle">
                     <button class="unit-btn active" data-unit="C">°C</button>
@@ -95,13 +125,25 @@
                 </div>
             </div>
 
+            <div id="radarDisplay" class="radar-display hidden">
+                <h3 class="section-title" id="radarTitle">Radar</h3>
+                <div class="radar-container" id="radarContainer">
+                    <canvas id="radarCanvas" class="radar-canvas"></canvas>
+                    <div class="radar-controls">
+                        <button id="radarPlayBtn" class="radar-btn" title="Play animation">&#9654;</button>
+                        <span id="radarTimestamp" class="radar-timestamp"></span>
+                    </div>
+                </div>
+            </div>
+
             <div id="forecastDisplay" class="forecast-display hidden">
-                <h3 class="forecast-title" id="forecastTitle">5-Day Forecast</h3>
+                <h3 class="section-title" id="forecastTitle">15-Day Forecast</h3>
                 <div id="forecastContainer" class="forecast-container"></div>
+                <p class="forecast-note" id="forecastNote">Forecasts beyond 2-3 days are subject to change.</p>
             </div>
 
             <div id="alertsDisplay" class="alerts-display hidden">
-                <h3 class="alerts-title" id="alertsTitle">Weather Alerts</h3>
+                <h3 class="section-title" id="alertsTitle">Weather Alerts</h3>
                 <div id="alertsContainer" class="alerts-container"></div>
             </div>
         </main>
@@ -111,6 +153,6 @@
         </footer>
     </div>
 
-    <script src="script.js"></script>
+    <script src="script.js?v=4"></script>
 </body>
 </html>
