@@ -466,6 +466,7 @@ const cityOverride = {
     'porto alegre': 'BR',
     'belo horizonte': 'BR',
     'manaus': 'BR',
+    'santa rosa': 'BR',
     'london': 'GB',
     'paris': 'FR',
     'tokyo': 'JP',
@@ -489,10 +490,14 @@ async function fetchWeather(city) {
     hideAlerts();
 
     try {
-        const overrideCountry = cityOverride[city.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')] || null;
+        let searchCity = city.trim();
+        searchCity = searchCity.split(',')[0].trim();
+        searchCity = searchCity.replace(/\s+[A-Z]{2,3}$/i, '').trim();
+
+        const overrideCountry = cityOverride[searchCity.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')] || null;
 
         const geoLang = overrideCountry ? 'en' : state.lang;
-        const geocodeUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=5&language=${geoLang}&format=json`;
+        const geocodeUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(searchCity)}&count=5&language=${geoLang}&format=json`;
         const geoResp = await fetch(geocodeUrl);
         const geoData = await geoResp.json();
 
