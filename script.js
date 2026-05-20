@@ -481,6 +481,10 @@ const cityOverride = {
     'lima': 'PE',
 };
 
+const coordOverride = {
+    'santa rosa': { lat: -27.87083, lon: -54.48139 },
+};
+
 async function fetchWeather(city) {
     showLoading();
     hideError();
@@ -494,36 +498,45 @@ async function fetchWeather(city) {
         searchCity = searchCity.split(',')[0].trim();
         searchCity = searchCity.replace(/\s+[A-Z]{2,3}$/i, '').trim();
 
-        const overrideCountry = cityOverride[searchCity.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')] || null;
+        const normalized = searchCity.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        const overrideCountry = cityOverride[normalized] || null;
 
-        const geoLang = overrideCountry ? 'en' : state.lang;
-        const geocodeUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(searchCity)}&count=5&language=${geoLang}&format=json`;
-        const geoResp = await fetch(geocodeUrl);
-        const geoData = await geoResp.json();
+        const fixed = coordOverride[normalized];
+        if (fixed) {
+            state.lat = fixed.lat;
+            state.lon = fixed.lon;
+            state.country = overrideCountry || 'BR';
+            state.cityName = 'Santa Rosa';
+        } else {
+            const geoLang = overrideCountry ? 'en' : state.lang;
+            const geocodeUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(searchCity)}&count=5&language=${geoLang}&format=json`;
+            const geoResp = await fetch(geocodeUrl);
+            const geoData = await geoResp.json();
 
-        if (!geoData || !geoData.results || geoData.results.length === 0) {
-            showError(i18n[state.lang].errorNotFound);
-            showWelcome();
-            return;
+            if (!geoData || !geoData.results || geoData.results.length === 0) {
+                showError(i18n[state.lang].errorNotFound);
+                showWelcome();
+                return;
+            }
+
+            let results = geoData.results;
+            let best = results[0];
+
+            if (overrideCountry) {
+                const match = results.find(r => r.country_code && r.country_code.toUpperCase() === overrideCountry);
+                if (match) best = match;
+            } else if (results.length > 1) {
+                const preferred = results.find(r => r.country_code && (r.country_code.toUpperCase() === 'US' || r.country_code.toUpperCase() === 'BR'));
+                if (preferred) best = preferred;
+            }
+
+            state.lat = best.latitude;
+            state.lon = best.longitude;
+
+            const countryCode = best.country_code ? best.country_code.toUpperCase() : '';
+            state.country = overrideCountry || countryCode;
+            state.cityName = best.name || city;
         }
-
-        let results = geoData.results;
-        let best = results[0];
-
-        if (overrideCountry) {
-            const match = results.find(r => r.country_code && r.country_code.toUpperCase() === overrideCountry);
-            if (match) best = match;
-        } else if (results.length > 1) {
-            const preferred = results.find(r => r.country_code && (r.country_code.toUpperCase() === 'US' || r.country_code.toUpperCase() === 'BR'));
-            if (preferred) best = preferred;
-        }
-
-        state.lat = best.latitude;
-        state.lon = best.longitude;
-
-        const countryCode = best.country_code ? best.country_code.toUpperCase() : '';
-        state.country = overrideCountry || countryCode;
-        state.cityName = best.name || city;
 
         const openMeteoUrl = `https://api.open-meteo.com/v1/forecast?latitude=${state.lat}&longitude=${state.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,pressure_msl&daily=temperature_2m_max,temperature_2m_min,weather_code,sunrise,sunset&timezone=auto&forecast_days=16`;
         const omResp = await fetch(openMeteoUrl);
