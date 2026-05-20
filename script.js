@@ -1007,10 +1007,9 @@ async function fetchRadar(lat, lon) {
         const resp = await fetch(`https://api.rainviewer.com/public/weather-maps.json`);
         if (!resp.ok) return;
         const data = await resp.json();
-        if (!data.radar?.past?.length) { radarDisplay.classList.add('hidden'); return; }
         const frames = data.radar.past.slice(-30);
         const tileSize = 256;
-        const bounds = 5;
+        const bounds = 8;
         const x = Math.floor((lon + 180) / 360 * Math.pow(2, bounds));
         const y = Math.floor((1 - Math.log(Math.tan(lat * Math.PI / 180) + 1 / Math.cos(lat * Math.PI / 180)) / Math.PI) / 2 * Math.pow(2, bounds));
         radarFrames = frames.map(f => ({
@@ -1026,7 +1025,9 @@ async function fetchRadar(lat, lon) {
         canvas.height = canvas.offsetHeight * 2;
         ctx.scale(2, 2);
         radarCurrentFrame = radarFrames.length - 1;
-        loadRadarFrame(radarCurrentFrame);
+        let loadedCount = 0;
+        radarFrames.forEach(f => { const i = new Image(); i.onload = () => { loadedCount++; if (loadedCount === 1) loadRadarFrame(radarCurrentFrame); }; i.src = f.url; });
+        setTimeout(() => { if (loadedCount === 0) radarDisplay.classList.add('hidden'); }, 5000);
     } catch (e) {
         const radarDisplay2 = document.getElementById('radarDisplay');
         if (radarDisplay2) radarDisplay2.classList.add('hidden');
