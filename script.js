@@ -1005,7 +1005,7 @@ function updateClock() {
         return;
     }
     const now = new Date();
-    const localMs = now.getTime() + now.getTimezoneOffset() * 60000 + offset * 1000;
+    const localMs = now.getTime() + offset * 1000;
     const d = new Date(localMs);
     const h = d.getUTCHours().toString().padStart(2, '0');
     const m = d.getUTCMinutes().toString().padStart(2, '0');
