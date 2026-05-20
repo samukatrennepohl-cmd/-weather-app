@@ -9,6 +9,7 @@ const state = {
     lon: null,
     cityName: null,
     alerts: null,
+    utcOffset: null,
 };
 
 const wmoIcons = {
@@ -552,6 +553,7 @@ async function fetchWeather(city) {
 
         state.weather = data;
         state.forecast = data;
+        state.utcOffset = data.utc_offset_seconds;
 
         renderWeather();
         renderForecast();
@@ -993,10 +995,21 @@ function formatTimeStr(dateStr) {
 function updateClock() {
     const el = document.getElementById('localTime');
     if (!el) return;
+    const offset = state.utcOffset;
+    if (offset == null) {
+        const now = new Date();
+        const h = now.getHours().toString().padStart(2, '0');
+        const m = now.getMinutes().toString().padStart(2, '0');
+        const s = now.getSeconds().toString().padStart(2, '0');
+        el.textContent = `${h}:${m}:${s}`;
+        return;
+    }
     const now = new Date();
-    const h = now.getHours().toString().padStart(2, '0');
-    const m = now.getMinutes().toString().padStart(2, '0');
-    const s = now.getSeconds().toString().padStart(2, '0');
+    const localMs = now.getTime() + now.getTimezoneOffset() * 60000 + offset * 1000;
+    const d = new Date(localMs);
+    const h = d.getUTCHours().toString().padStart(2, '0');
+    const m = d.getUTCMinutes().toString().padStart(2, '0');
+    const s = d.getUTCSeconds().toString().padStart(2, '0');
     el.textContent = `${h}:${m}:${s}`;
 }
 
@@ -1222,6 +1235,7 @@ async function fetchWeatherByCoords(lat, lon) {
             const data = await omResp.json();
             state.weather = data;
             state.forecast = data;
+            state.utcOffset = data.utc_offset_seconds;
         }
     } catch (e) {}
 
