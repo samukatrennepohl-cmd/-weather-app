@@ -1196,7 +1196,7 @@ async function reverseGeocode(lat, lon) {
     if (!nomResp.ok) throw new Error('Nominatim failed');
     const nomData = await nomResp.json();
     const addr = nomData.address || {};
-    state.cityName = nomData.name || addr.city || addr.town || addr.village || addr.municipality || addr.county || `${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+    state.cityName = addr.city || addr.town || addr.village || addr.municipality || addr.county || `${lat.toFixed(4)}, ${lon.toFixed(4)}`;
     state.country = (addr.country_code || '').toUpperCase();
     const iso = addr['ISO3166-2-lvl4'];
     if (iso) state.stateCode = iso.split('-')[1] || null;
@@ -1337,3 +1337,4 @@ showWelcome();
 createParticles();
 updateClock();
 setInterval(updateClock, 1000);
+getLocation();
