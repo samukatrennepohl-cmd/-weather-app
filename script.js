@@ -1011,8 +1011,8 @@ async function fetchRadar(lat, lon) {
         const frames = data.radar.past.slice(-30);
         const tileSize = 256;
         const bounds = 5;
-        const x = Math.round((lon + 180) / 360 * Math.pow(2, bounds));
-        const y = Math.round((1 - Math.log(Math.tan(lat * Math.PI / 180) + 1 / Math.cos(lat * Math.PI / 180)) / Math.PI) / 2 * Math.pow(2, bounds));
+        const x = Math.floor((lon + 180) / 360 * Math.pow(2, bounds));
+        const y = Math.floor((1 - Math.log(Math.tan(lat * Math.PI / 180) + 1 / Math.cos(lat * Math.PI / 180)) / Math.PI) / 2 * Math.pow(2, bounds));
         radarFrames = frames.map(f => ({
             time: f.time,
             url: `https://tilecache.rainviewer.com${f.path}/256/${bounds}/${x}/${y}.png`
