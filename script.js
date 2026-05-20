@@ -1018,12 +1018,9 @@ async function fetchRadar(lat, lon) {
         }));
         radarLoaded = true;
         radarDisplay.classList.remove('hidden');
+        console.log('Radar frames:', radarFrames.length, 'first URL:', radarFrames[0]?.url);
         const canvas = document.getElementById('radarCanvas');
-        if (!canvas) return;
-        const ctx = canvas.getContext('2d');
-        canvas.width = canvas.offsetWidth * 2;
-        canvas.height = canvas.offsetHeight * 2;
-        ctx.scale(2, 2);
+        if (!canvas) { console.log('No canvas'); return; }
         radarCurrentFrame = radarFrames.length - 1;
         loadRadarFrame(radarCurrentFrame);
     } catch (e) {
@@ -1040,29 +1037,18 @@ function loadRadarFrame(index) {
     const img = new Image();
     img.crossOrigin = 'anonymous';
     img.onload = () => {
-        canvas.width = canvas.offsetWidth * 2;
-        canvas.height = canvas.offsetHeight * 2;
-        ctx.scale(2, 2);
+        console.log('Tile loaded:', img.width, 'x', img.height);
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        const gradient = ctx.createRadialGradient(
-            canvas.offsetWidth / 2, canvas.offsetHeight / 2, 0,
-            canvas.offsetWidth / 2, canvas.offsetHeight / 2, Math.min(canvas.offsetWidth, canvas.offsetHeight) * 0.7
-        );
-        gradient.addColorStop(0, 'rgba(10, 18, 32, 0)');
-        gradient.addColorStop(1, 'rgba(10, 18, 32, 1)');
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, canvas.offsetWidth, canvas.offsetHeight);
-
-        ctx.drawImage(img, canvas.offsetWidth / 2 - 128, canvas.offsetHeight / 2 - 128, 256, 256);
-
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
         const ts = document.getElementById('radarTimestamp');
         if (ts && radarFrames[index]) {
             const d = new Date(radarFrames[index].time * 1000);
             ts.textContent = d.toLocaleString(state.lang);
         }
     };
-    img.onerror = () => {};
+    img.onerror = () => { console.log('Tile load error:', radarFrames[index]?.url); };
     img.src = radarFrames[index].url;
 }
 
