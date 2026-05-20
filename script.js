@@ -10,6 +10,7 @@ const state = {
     cityName: null,
     alerts: null,
     timezone: null,
+    utcOffset: null,
 };
 
 const wmoIcons = {
@@ -554,6 +555,8 @@ async function fetchWeather(city) {
         state.weather = data;
         state.forecast = data;
         state.timezone = data.timezone;
+        state.utcOffset = data.utc_offset_seconds;
+        console.log('API data timezone:', data.timezone, 'utcOffset:', data.utc_offset_seconds);
 
         renderWeather();
         renderForecast();
@@ -995,14 +998,23 @@ function formatTimeStr(dateStr) {
 function updateClock() {
     const el = document.getElementById('localTime');
     if (!el) return;
-    const tz = state.timezone;
     const now = new Date();
+    const tz = state.timezone;
     if (tz) {
         try {
             const fmt = new Intl.DateTimeFormat('en', { timeZone: tz, hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
             el.textContent = fmt.format(now);
             return;
         } catch (e) {}
+    }
+    const offset = state.utcOffset;
+    if (offset != null) {
+        const d = new Date(now.getTime() + offset * 1000);
+        const h = d.getUTCHours().toString().padStart(2, '0');
+        const m = d.getUTCMinutes().toString().padStart(2, '0');
+        const s = d.getUTCSeconds().toString().padStart(2, '0');
+        el.textContent = `${h}:${m}:${s}`;
+        return;
     }
     const h = now.getHours().toString().padStart(2, '0');
     const m = now.getMinutes().toString().padStart(2, '0');
@@ -1233,6 +1245,7 @@ async function fetchWeatherByCoords(lat, lon) {
             state.weather = data;
             state.forecast = data;
             state.timezone = data.timezone;
+            state.utcOffset = data.utc_offset_seconds;
         }
     } catch (e) {}
 
