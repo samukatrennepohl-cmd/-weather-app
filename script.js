@@ -452,6 +452,85 @@ for (const code of ['en', ...Object.keys(i18nTranslations)]) {
     i18n[code] = { ...i18nBase, ...i18nTranslations[code] };
 }
 
+const alertEventTranslations = {
+    en: {
+        'geada': 'Frost',
+        'chuvas intensas': 'Heavy Rain',
+        'tempestade': 'Thunderstorm',
+        'onda de calor': 'Heat Wave',
+        'vendaval': 'Gale',
+        'alagamento': 'Flooding',
+        'granizo': 'Hail',
+        'baixa umidade': 'Low Humidity',
+        'onda de frio': 'Cold Snap',
+        'nevoeiro': 'Dense Fog',
+        'seca': 'Drought',
+        'perigo potencial': 'Potential Danger',
+    },
+    pt: {
+        'geada': 'Geada',
+        'chuvas intensas': 'Chuvas Intensas',
+        'tempestade': 'Tempestade',
+        'onda de calor': 'Onda de Calor',
+        'vendaval': 'Vendaval',
+        'alagamento': 'Alagamento',
+        'granizo': 'Granizo',
+        'baixa umidade': 'Baixa Umidade',
+        'onda de frio': 'Onda de Frio',
+        'nevoeiro': 'Nevoeiro',
+        'seca': 'Seca',
+        'perigo potencial': 'Perigo Potencial',
+    },
+    es: {
+        'geada': 'Helada',
+        'chuvas intensas': 'Lluvias Intensas',
+        'tempestade': 'Tormenta',
+        'onda de calor': 'Ola de Calor',
+        'vendaval': 'Vendaval',
+        'alagamento': 'Inundación',
+        'granizo': 'Granizo',
+        'baixa umidade': 'Baja Humedad',
+        'onda de frio': 'Ola de Frío',
+        'nevoeiro': 'Niebla Densa',
+        'seca': 'Sequía',
+        'perigo potencial': 'Peligro Potencial',
+    },
+    fr: { 'geada': 'Gel', 'chuvas intensas': 'Pluies Intenses', 'tempestade': 'Orage', 'onda de calor': 'Canicule', 'vendaval': 'Coup de Vent', 'alagamento': 'Inondation', 'granizo': 'Grêle', 'baixa umidade': 'Faible Humidité', 'onda de frio': 'Vague de Froid', 'nevoeiro': 'Brouillard Dense', 'seca': 'Sécheresse', 'perigo potencial': 'Danger Potentiel' },
+    de: { 'geada': 'Frost', 'chuvas intensas': 'Starkregen', 'tempestade': 'Gewitter', 'onda de calor': 'Hitzewelle', 'vendaval': 'Sturm', 'alagamento': 'Überschwemmung', 'granizo': 'Hagel', 'baixa umidade': 'Niedrige Luftfeuchtigkeit', 'onda de frio': 'Kältewelle', 'nevoeiro': 'Dichter Nebel', 'seca': 'Dürre', 'perigo potencial': 'Potenzielle Gefahr' },
+    it: { 'geada': 'Gelata', 'chuvas intensas': 'Piogge Intense', 'tempestade': 'Tempesta', 'onda de calor': 'Ondata di Calore', 'vendaval': 'Burrasca', 'alagamento': 'Allagamento', 'granizo': 'Grandine', 'baixa umidade': 'Bassa Umidità', 'onda de frio': 'Ondata di Freddo', 'nevoeiro': 'Nebbia Fitta', 'seca': 'Siccità', 'perigo potencial': 'Pericolo Potenziale' },
+    nl: { 'geada': 'Vorst', 'chuvas intensas': 'Zware Regen', 'tempestade': 'Onweer', 'onda de calor': 'Hittegolf', 'vendaval': 'Storm', 'alagamento': 'Overstroming', 'granizo': 'Hagel', 'baixa umidade': 'Lage Luchtvochtigheid', 'onda de frio': 'Koudegolf', 'nevoeiro': 'Dichte Mist', 'seca': 'Droogte', 'perigo potencial': 'Potentieel Gevaar' },
+    pl: { 'geada': 'Mróz', 'chuvas intensas': 'Intensywne Opady', 'tempestade': 'Burza', 'onda de calor': 'Fala Upałów', 'vendaval': 'Sztorm', 'alagamento': 'Powódź', 'granizo': 'Grad', 'baixa umidade': 'Niska Wilgotność', 'onda de frio': 'Fala Chłodu', 'nevoeiro': 'Gęsta Mgła', 'seca': 'Susza', 'perigo potencial': 'Potencjalne Zagrożenie' },
+    ru: { 'geada': 'Мороз', 'chuvas intensas': 'Сильные Дожди', 'tempestade': 'Гроза', 'onda de calor': 'Жара', 'vendaval': 'Шторм', 'alagamento': 'Наводнение', 'granizo': 'Град', 'baixa umidade': 'Низкая Влажность', 'onda de frio': 'Холодная Волна', 'nevoeiro': 'Густой Туман', 'seca': 'Засуха', 'perigo potencial': 'Потенциальная Опасность' },
+    ja: { 'geada': '霜', 'chuvas intensas': '大雨', 'tempestade': '雷雨', 'onda de calor': '熱波', 'vendaval': '強風', 'alagamento': '洪水', 'granizo': '雹', 'baixa umidade': '低湿度', 'onda de frio': '寒波', 'nevoeiro': '濃霧', 'seca': '干ばつ', 'perigo potencial': '潜在的な危険' },
+    ko: { 'geada': '서리', 'chuvas intensas': '폭우', 'tempestade': '뇌우', 'onda de calor': '폭염', 'vendaval': '강풍', 'alagamento': '홍수', 'granizo': '우박', 'baixa umidade': '낮은 습도', 'onda de frio': '한파', 'nevoeiro': '짙은 안개', 'seca': '가뭄', 'perigo potencial': '잠재적 위험' },
+    zh: { 'geada': '霜冻', 'chuvas intensas': '强降雨', 'tempestade': '雷暴', 'onda de calor': '热浪', 'vendaval': '大风', 'alagamento': '洪水', 'granizo': '冰雹', 'baixa umidade': '低湿度', 'onda de frio': '寒潮', 'nevoeiro': '浓雾', 'seca': '干旱', 'perigo potencial': '潜在危险' },
+    ar: { 'geada': 'صقيع', 'chuvas intensas': 'أمطار غزيرة', 'tempestade': 'عاصفة رعدية', 'onda de calor': 'موجة حر', 'vendaval': 'رياح عاتية', 'alagamento': 'فيضان', 'granizo': 'برد', 'baixa umidade': 'رطوبة منخفضة', 'onda de frio': 'موجة برد', 'nevoeiro': 'ضباب كثيف', 'seca': 'جفاف', 'perigo potencial': 'خطر محتمل' },
+    hi: { 'geada': 'पाला', 'chuvas intensas': 'भारी वर्षा', 'tempestade': 'तूफान', 'onda de calor': 'गर्मी की लहर', 'vendaval': 'आंधी', 'alagamento': 'बाढ़', 'granizo': 'ओला', 'baixa umidade': 'कम नमी', 'onda de frio': 'शीत लहर', 'nevoeiro': 'घना कोहरा', 'seca': 'सूखा', 'perigo potencial': 'संभावित खतरा' },
+    tr: { 'geada': 'Don', 'chuvas intensas': 'Şiddetli Yağmur', 'tempestade': 'Fırtına', 'onda de calor': 'Sıcak Dalgası', 'vendaval': 'Fırtına', 'alagamento': 'Sel', 'granizo': 'Dolu', 'baixa umidade': 'Düşük Nem', 'onda de frio': 'Soğuk Dalgası', 'nevoeiro': 'Yoğun Sis', 'seca': 'Kuraklık', 'perigo potencial': 'Potansiyel Tehlike' },
+    sv: { 'geada': 'Frost', 'chuvas intensas': 'Kraftigt Regn', 'tempestade': 'Åska', 'onda de calor': 'Värmebölja', 'vendaval': 'Storm', 'alagamento': 'Översvämning', 'granizo': 'Hagel', 'baixa umidade': 'Låg Fuktighet', 'onda de frio': 'Köldknäpp', 'nevoeiro': 'Tät Dimma', 'seca': 'Torka', 'perigo potencial': 'Potentiell Fara' },
+    da: { 'geada': 'Frost', 'chuvas intensas': 'Kraftig Regn', 'tempestade': 'Tordenvejr', 'onda de calor': 'Hedebølge', 'vendaval': 'Storm', 'alagamento': 'Oversvømmelse', 'granizo': 'Hagl', 'baixa umidade': 'Lav Fugtighed', 'onda de frio': 'Kuldebølge', 'nevoeiro': 'Tæt Tåge', 'seca': 'Tørke', 'perigo potencial': 'Potentiel Fare' },
+    fi: { 'geada': 'Hallaa', 'chuvas intensas': 'Rankka Sade', 'tempestade': 'Ukkonen', 'onda de calor': 'Lämpöaalto', 'vendaval': 'Myrsky', 'alagamento': 'Tulva', 'granizo': 'Raekuuro', 'baixa umidade': 'Alhainen Kosteus', 'onda de frio': 'Kylmäaalto', 'nevoeiro': 'Tiheä Sumu', 'seca': 'Kuivuus', 'perigo potencial': 'Mahdollinen Vaara' },
+    no: { 'geada': 'Frost', 'chuvas intensas': 'Kraftig Regn', 'tempestade': 'Tordenvær', 'onda de calor': 'Hetebølge', 'vendaval': 'Storm', 'alagamento': 'Oversvømmelse', 'granizo': 'Hagl', 'baixa umidade': 'Lav Fuktighet', 'onda de frio': 'Kuldebølge', 'nevoeiro': 'Tett Tåke', 'seca': 'Tørke', 'perigo potencial': 'Potensiell Fare' },
+    cs: { 'geada': 'Mráz', 'chuvas intensas': 'Silný Déšť', 'tempestade': 'Bouřka', 'onda de calor': 'Vlna Veder', 'vendaval': 'Vichřice', 'alagamento': 'Záplava', 'granizo': 'Kroupy', 'baixa umidade': 'Nízká Vlhkost', 'onda de frio': 'Studená Vlna', 'nevoeiro': 'Hustá Mlha', 'seca': 'Sucho', 'perigo potencial': 'Potenciální Nebezpečí' },
+    ro: { 'geada': 'Îngheț', 'chuvas intensas': 'Ploi Torențiale', 'tempestade': 'Furtună', 'onda de calor': 'Val de Căldură', 'vendaval': 'Vijelie', 'alagamento': 'Inundație', 'granizo': 'Grindină', 'baixa umidade': 'Umiditate Scăzută', 'onda de frio': 'Val de Frig', 'nevoeiro': 'Ceață Densă', 'seca': 'Secetă', 'perigo potencial': 'Pericol Potențial' },
+    el: { 'geada': 'Παγετός', 'chuvas intensas': 'Έντονες Βροχές', 'tempestade': 'Καταιγίδα', 'onda de calor': 'Καύσωνας', 'vendaval': 'Θύελλα', 'alagamento': 'Πλημμύρα', 'granizo': 'Χαλάζι', 'baixa umidade': 'Χαμηλή Υγρασία', 'onda de frio': 'Ψύχος', 'nevoeiro': 'Πυκνή Ομίχλη', 'seca': 'Ξηρασία', 'perigo potencial': 'Πιθανός Κίνδυνος' },
+    th: { 'geada': 'น้ำค้างแข็ง', 'chuvas intensas': 'ฝนตกหนัก', 'tempestade': 'พายุฝนฟ้าคะนอง', 'onda de calor': 'คลื่นความร้อน', 'vendaval': 'พายุลมแรง', 'alagamento': 'น้ำท่วม', 'granizo': 'ลูกเห็บ', 'baixa umidade': 'ความชื้นต่ำ', 'onda de frio': 'คลื่นความหนาว', 'nevoeiro': 'หมอกหนา', 'seca': 'ภัยแล้ง', 'perigo potencial': 'อันตรายที่อาจเกิดขึ้น' },
+    vi: { 'geada': 'Sương Giá', 'chuvas intensas': 'Mưa Lớn', 'tempestade': 'Dông Bão', 'onda de calor': 'Đợt Nắng Nóng', 'vendaval': 'Gió Mạnh', 'alagamento': 'Ngập Lụt', 'granizo': 'Mưa Đá', 'baixa umidade': 'Độ Ẩm Thấp', 'onda de frio': 'Đợt Lạnh', 'nevoeiro': 'Sương Mù Dày Đặc', 'seca': 'Hạn Hán', 'perigo potencial': 'Nguy Hiểm Tiềm Ẩn' },
+    he: { 'geada': 'כפור', 'chuvas intensas': 'גשמים עזים', 'tempestade': 'סופת רעמים', 'onda de calor': 'גל חום', 'vendaval': 'רוח חזקה', 'alagamento': 'שיטפון', 'granizo': 'ברד', 'baixa umidade': 'לחות נמוכה', 'onda de frio': 'גל קור', 'nevoeiro': 'ערפל כבד', 'seca': 'בצורת', 'perigo potencial': 'סכנה פוטנציאלית' },
+};
+
+function translateAlertText(text) {
+    const lang = state.lang || 'en';
+    const translations = alertEventTranslations[lang] || alertEventTranslations.en;
+    const lower = text.toLowerCase().trim();
+    for (const [ptPhrase, translated] of Object.entries(translations)) {
+        if (lower.includes(ptPhrase)) {
+            return text.replace(new RegExp(ptPhrase, 'gi'), translated);
+        }
+    }
+    return text;
+}
+
 const cityOverride = {
     'miami': 'US',
     'new york': 'US',
@@ -844,13 +923,16 @@ function renderAlerts() {
         else if (sevKey.includes('watch') || sevKey.includes('monitoramento')) sevLabel = i18n[state.lang].severityWatch;
         else sevLabel = i18n[state.lang].severityAdvisory;
 
+        const eventName = translateAlertText(a.event || 'Alert');
+        const descText = translateAlertText(a.description || a.headline || '');
+        const urgText = translateAlertText(a.urgency || '');
         return `<div class="alert-card ${getSeverityClass(a.severityCode)}">
             <div class="alert-head">
-                <div class="alert-event">${a.event || 'Alert'}</div>
+                <div class="alert-event">${eventName}</div>
                 <div class="alert-severity">${sevLabel}</div>
             </div>
-            <div class="alert-urgency">${a.urgency || ''}</div>
-            <div class="alert-desc">${a.description || a.headline || ''}</div>
+            <div class="alert-urgency">${urgText}</div>
+            <div class="alert-desc">${descText}</div>
         </div>`;
     }).join('');
 }
