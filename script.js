@@ -1017,10 +1017,11 @@ async function fetchRadar(lat, lon) {
             url: `https://tilecache.rainviewer.com${f.path}/256/${bounds}/${x}/${y}/5/1_1.png`
         }));
         radarLoaded = true;
-        radarDisplay.classList.remove('hidden');
-        console.log('Radar frames:', radarFrames.length, 'first URL:', radarFrames[0]?.url);
         const canvas = document.getElementById('radarCanvas');
-        if (!canvas) { console.log('No canvas'); return; }
+        if (!canvas) return;
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+        radarDisplay.classList.remove('hidden');
         radarCurrentFrame = radarFrames.length - 1;
         loadRadarFrame(radarCurrentFrame);
     } catch (e) {
@@ -1037,18 +1038,17 @@ function loadRadarFrame(index) {
     const img = new Image();
     img.crossOrigin = 'anonymous';
     img.onload = () => {
-        console.log('Tile loaded:', img.width, 'x', img.height);
-        canvas.width = canvas.offsetWidth;
-        canvas.height = canvas.offsetHeight;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        const cx = canvas.width / 2, cy = canvas.height / 2;
+        const s = Math.min(canvas.width, canvas.height) / 256;
+        ctx.drawImage(img, cx - 128 * s, cy - 128 * s, 256 * s, 256 * s);
         const ts = document.getElementById('radarTimestamp');
         if (ts && radarFrames[index]) {
             const d = new Date(radarFrames[index].time * 1000);
             ts.textContent = d.toLocaleString(state.lang);
         }
     };
-    img.onerror = () => { console.log('Tile load error:', radarFrames[index]?.url); };
+    img.onerror = () => {};
     img.src = radarFrames[index].url;
 }
 
