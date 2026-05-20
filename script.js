@@ -479,11 +479,17 @@ const cityOverride = {
     'bogota': 'CO',
     'santiago': 'CL',
     'lima': 'PE',
+    'pequim': 'CN',
+    'pequin': 'CN',
 };
 
 const coordOverride = {
     'santa rosa': { lat: -27.87083, lon: -54.48139 },
+    'pequim': { lat: 39.9042, lon: 116.4074 },
+    'pequin': { lat: 39.9042, lon: 116.4074 },
 };
+
+console.log('coordOverride loaded, keys:', Object.keys(coordOverride));
 
 async function fetchWeather(city) {
     showLoading();
@@ -506,7 +512,7 @@ async function fetchWeather(city) {
             state.lat = fixed.lat;
             state.lon = fixed.lon;
             state.country = overrideCountry || 'BR';
-            state.cityName = 'Santa Rosa';
+            state.cityName = searchCity.replace(/\b\w/g, c => c.toUpperCase());
         } else {
             const geoLang = overrideCountry ? 'en' : state.lang;
             const geocodeUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(searchCity)}&count=5&language=${geoLang}&format=json`;
@@ -514,6 +520,7 @@ async function fetchWeather(city) {
             const geoData = await geoResp.json();
 
             if (!geoData || !geoData.results || geoData.results.length === 0) {
+                hideLoading();
                 showError(i18n[state.lang].errorNotFound);
                 showWelcome();
                 return;
@@ -540,7 +547,7 @@ async function fetchWeather(city) {
 
         const openMeteoUrl = `https://api.open-meteo.com/v1/forecast?latitude=${state.lat}&longitude=${state.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,pressure_msl&daily=temperature_2m_max,temperature_2m_min,weather_code,sunrise,sunset&timezone=auto&forecast_days=16`;
         const omResp = await fetch(openMeteoUrl);
-        if (!omResp.ok) { showError(i18n[state.lang].errorGeneric); showWelcome(); return; }
+        if (!omResp.ok) { hideLoading(); showError(i18n[state.lang].errorGeneric); showWelcome(); return; }
         const data = await omResp.json();
 
         state.weather = data;
