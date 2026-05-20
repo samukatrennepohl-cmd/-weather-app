@@ -1009,12 +1009,12 @@ async function fetchRadar(lat, lon) {
         const data = await resp.json();
         const frames = data.radar.past.slice(-30);
         const tileSize = 256;
-        const bounds = 6;
+        const bounds = 7;
         const x = Math.floor((lon + 180) / 360 * Math.pow(2, bounds));
         const y = Math.floor((1 - Math.log(Math.tan(lat * Math.PI / 180) + 1 / Math.cos(lat * Math.PI / 180)) / Math.PI) / 2 * Math.pow(2, bounds));
         radarFrames = frames.map(f => ({
             time: f.time,
-            url: `https://tilecache.rainviewer.com${f.path}/256/${bounds}/${x}/${y}.png`
+            url: `https://tilecache.rainviewer.com${f.path}/256/${bounds}/${x}/${y}/5/1_1.png`
         }));
         radarLoaded = true;
         radarDisplay.classList.remove('hidden');
@@ -1025,9 +1025,7 @@ async function fetchRadar(lat, lon) {
         canvas.height = canvas.offsetHeight * 2;
         ctx.scale(2, 2);
         radarCurrentFrame = radarFrames.length - 1;
-        let loadedCount = 0;
-        radarFrames.forEach(f => { const i = new Image(); i.onload = () => { loadedCount++; if (loadedCount === 1) loadRadarFrame(radarCurrentFrame); }; i.src = f.url; });
-        setTimeout(() => { if (loadedCount === 0) radarDisplay.classList.add('hidden'); }, 5000);
+        loadRadarFrame(radarCurrentFrame);
     } catch (e) {
         const radarDisplay2 = document.getElementById('radarDisplay');
         if (radarDisplay2) radarDisplay2.classList.add('hidden');
