@@ -1009,7 +1009,7 @@ async function fetchRadar(lat, lon) {
         const data = await resp.json();
         const frames = data.radar.past.slice(-30);
         const tileSize = 256;
-        const bounds = 8;
+        const bounds = 6;
         const x = Math.floor((lon + 180) / 360 * Math.pow(2, bounds));
         const y = Math.floor((1 - Math.log(Math.tan(lat * Math.PI / 180) + 1 / Math.cos(lat * Math.PI / 180)) / Math.PI) / 2 * Math.pow(2, bounds));
         radarFrames = frames.map(f => ({
