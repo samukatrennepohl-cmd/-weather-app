@@ -989,7 +989,8 @@ function updateClock() {
     const now = new Date();
     const h = now.getHours().toString().padStart(2, '0');
     const m = now.getMinutes().toString().padStart(2, '0');
-    el.textContent = `${h}:${m}`;
+    const s = now.getSeconds().toString().padStart(2, '0');
+    el.textContent = `${h}:${m}:${s}`;
 }
 
 // Radar state
@@ -1131,6 +1132,10 @@ function applyLanguage() {
     document.getElementById('footerPowered').textContent = i18n[state.lang].footer;
 
     if (state.weather) {
+        const code = state.weather.current?.weather_code;
+        if (code != null) {
+            document.getElementById('weatherDesc').textContent = getWmoDesc(code);
+        }
         renderAlerts();
     }
 }
@@ -1249,19 +1254,26 @@ async function fetchWeatherByCoords(lat, lon) {
 
 async function fetchLocationByIP() {
     for (const url of [
+        'https://ipinfo.io/json',
         'https://ipapi.co/json/',
-        'https://freegeoip.app/json/',
     ]) {
         try {
             const resp = await fetch(url);
             if (resp.ok) {
                 const data = await resp.json();
-                const lat = data.latitude ?? data.lat;
-                const lon = data.longitude ?? data.lon;
-                if (lat != null && lon != null) {
+                let lat, lon;
+                if (data.loc) {
+                    const parts = data.loc.split(',');
+                    lat = parseFloat(parts[0]);
+                    lon = parseFloat(parts[1]);
+                } else {
+                    lat = data.latitude ?? data.lat;
+                    lon = data.longitude ?? data.lon;
+                }
+                if (lat != null && lon != null && !isNaN(lat) && !isNaN(lon)) {
                     state.cityName = data.city || '';
-                    state.country = (data.country_code || data.countryCode || '').toUpperCase();
-                    state.stateCode = (data.region_code || '').toUpperCase() || null;
+                    state.country = (data.country || data.country_code || data.countryCode || '').toUpperCase();
+                    state.stateCode = (data.region_code || data.region || '').toUpperCase() || null;
                     await fetchWeatherByCoords(lat, lon);
                     return true;
                 }
@@ -1272,7 +1284,7 @@ async function fetchLocationByIP() {
 }
 
 function getLocation() {
-    const geoOptions = { enableHighAccuracy: false, timeout: 5000 };
+    const geoOptions = { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 };
     const onSuccess = (pos) => {
         fetchWeatherByCoords(pos.coords.latitude, pos.coords.longitude);
     };
