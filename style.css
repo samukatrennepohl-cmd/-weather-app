@@ -646,6 +646,17 @@ body {
     font-weight: 500;
 }
 
+.radar-attribution {
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.35);
+    text-align: center;
+    margin-top: 0.25rem;
+}
+.radar-attribution a {
+    color: rgba(255, 255, 255, 0.5);
+    text-decoration: underline;
+}
+
 /* Forecast note */
 .forecast-note {
     font-size: 0.75rem;

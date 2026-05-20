@@ -1028,6 +1028,9 @@ let radarCurrentFrame = 0;
 let radarInterval = null;
 let radarPlaying = false;
 let radarLoaded = false;
+let radarBounds = 7;
+let radarTileX = 0;
+let radarTileY = 0;
 
 async function fetchRadar(lat, lon) {
     const radarDisplay = document.getElementById('radarDisplay');
@@ -1038,12 +1041,12 @@ async function fetchRadar(lat, lon) {
         const data = await resp.json();
         const frames = data.radar.past.slice(-30);
         const tileSize = 256;
-        const bounds = 7;
-        const x = Math.floor((lon + 180) / 360 * Math.pow(2, bounds));
-        const y = Math.floor((1 - Math.log(Math.tan(lat * Math.PI / 180) + 1 / Math.cos(lat * Math.PI / 180)) / Math.PI) / 2 * Math.pow(2, bounds));
+        radarBounds = 7;
+        radarTileX = Math.floor((lon + 180) / 360 * Math.pow(2, radarBounds));
+        radarTileY = Math.floor((1 - Math.log(Math.tan(lat * Math.PI / 180) + 1 / Math.cos(lat * Math.PI / 180)) / Math.PI) / 2 * Math.pow(2, radarBounds));
         radarFrames = frames.map(f => ({
             time: f.time,
-            url: `https://tilecache.rainviewer.com${f.path}/256/${bounds}/${x}/${y}/5/1_1.png`
+            url: `https://tilecache.rainviewer.com${f.path}/256/${radarBounds}/${radarTileX}/${radarTileY}/5/1_1.png`
         }));
         radarLoaded = true;
         const canvas = document.getElementById('radarCanvas');
@@ -1064,21 +1067,49 @@ function loadRadarFrame(index) {
     const canvas = document.getElementById('radarCanvas');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.onload = () => {
+    const cx = canvas.width / 2, cy = canvas.height / 2;
+    const s = Math.min(canvas.width, canvas.height) / 256;
+
+    // Draw base map first
+    const baseImg = new Image();
+    baseImg.crossOrigin = 'anonymous';
+    baseImg.onload = () => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        const cx = canvas.width / 2, cy = canvas.height / 2;
-        const s = Math.min(canvas.width, canvas.height) / 256;
-        ctx.drawImage(img, cx - 128 * s, cy - 128 * s, 256 * s, 256 * s);
-        const ts = document.getElementById('radarTimestamp');
-        if (ts && radarFrames[index]) {
-            const d = new Date(radarFrames[index].time * 1000);
-            ts.textContent = d.toLocaleString(state.lang);
-        }
+        ctx.globalAlpha = 0.6;
+        ctx.drawImage(baseImg, cx - 128 * s, cy - 128 * s, 256 * s, 256 * s);
+        ctx.globalAlpha = 1;
+
+        // Then draw radar overlay
+        const radarImg = new Image();
+        radarImg.crossOrigin = 'anonymous';
+        radarImg.onload = () => {
+            ctx.drawImage(radarImg, cx - 128 * s, cy - 128 * s, 256 * s, 256 * s);
+            const ts = document.getElementById('radarTimestamp');
+            if (ts && radarFrames[index]) {
+                const d = new Date(radarFrames[index].time * 1000);
+                ts.textContent = d.toLocaleString(state.lang);
+            }
+        };
+        radarImg.onerror = () => {};
+        radarImg.src = radarFrames[index].url;
     };
-    img.onerror = () => {};
-    img.src = radarFrames[index].url;
+    baseImg.onerror = () => {
+        // Still draw radar even if base map fails
+        const radarImg = new Image();
+        radarImg.crossOrigin = 'anonymous';
+        radarImg.onload = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(radarImg, cx - 128 * s, cy - 128 * s, 256 * s, 256 * s);
+            const ts = document.getElementById('radarTimestamp');
+            if (ts && radarFrames[index]) {
+                const d = new Date(radarFrames[index].time * 1000);
+                ts.textContent = d.toLocaleString(state.lang);
+            }
+        };
+        radarImg.onerror = () => {};
+        radarImg.src = radarFrames[index].url;
+    };
+    baseImg.src = `https://a.basemaps.cartocdn.com/light_all/${radarBounds}/${radarTileX}/${radarTileY}.png`;
 }
 
 function toggleRadarAnimation() {
