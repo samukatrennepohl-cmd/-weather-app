@@ -565,7 +565,7 @@ const cityOverride = {
 };
 
 const coordOverride = {
-    'santa rosa': { lat: -27.87083, lon: -54.48139 },
+    'santa rosa': { lat: -27.87083, lon: -54.48139, stateCode: 'RS' },
     'pequim': { lat: 39.9042, lon: 116.4074 },
     'pequin': { lat: 39.9042, lon: 116.4074 },
 };
@@ -594,6 +594,7 @@ async function fetchWeather(city) {
             state.lon = fixed.lon;
             state.country = overrideCountry || 'BR';
             state.cityName = searchCity.replace(/\b\w/g, c => c.toUpperCase());
+            if (fixed.stateCode) state.stateCode = fixed.stateCode;
         } else {
             const geoLang = overrideCountry ? 'en' : state.lang;
             const geocodeUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(searchCity)}&count=5&language=${geoLang}&format=json`;
@@ -857,6 +858,7 @@ function parseInmetAlerts(data, cityName) {
     if (!data || typeof data !== 'object') return null;
     const alerts = [];
     const stateAbbr = state.stateCode || '';
+    const cityLower = (cityName || '').toLowerCase().trim();
     for (const key in data) {
         const item = data[key];
         if (!item || !Array.isArray(item)) continue;
@@ -865,6 +867,9 @@ function parseInmetAlerts(data, cityName) {
                 const munList = a.municipios.toLowerCase();
                 if (stateAbbr) {
                     if (!munList.includes(` - ${stateAbbr.toLowerCase()}`)) return;
+                }
+                if (cityLower && stateAbbr) {
+                    if (!munList.includes(cityLower)) return;
                 }
             }
             const severity = mapInmetSeverity(a);
