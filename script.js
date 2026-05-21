@@ -399,6 +399,8 @@ const i18nBase = {
     pressure: 'Pressure',
     sunrise: 'Sunrise',
     sunset: 'Sunset',
+    rain: 'Rain',
+    windGusts: 'Wind Gusts',
     forecastTitle: '15-Day Forecast',
     searchPlaceholder: 'Search for a city...',
     welcomeTitle: 'Welcome to Weather App',
@@ -946,7 +948,7 @@ async function fetchWeather(city) {
             state.stateCode = extractStateCode(state.country, best.admin1);
         }
 
-        const openMeteoUrl = `https://api.open-meteo.com/v1/forecast?latitude=${state.lat}&longitude=${state.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,pressure_msl&daily=temperature_2m_max,temperature_2m_min,weather_code,sunrise,sunset&timezone=auto&forecast_days=16`;
+        const openMeteoUrl = `https://api.open-meteo.com/v1/forecast?latitude=${state.lat}&longitude=${state.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m,precipitation,pressure_msl&daily=temperature_2m_max,temperature_2m_min,weather_code,sunrise,sunset,precipitation_sum,precipitation_probability_max,wind_speed_10m_max,wind_gusts_10m_max&timezone=auto&forecast_days=16`;
         const omResp = await fetch(openMeteoUrl);
         if (!omResp.ok) { hideLoading(); showError(i18n[state.lang].errorGeneric); showWelcome(); return; }
         const data = await omResp.json();
@@ -1311,6 +1313,36 @@ function renderWeather() {
 
     document.getElementById('pressure').textContent = c.pressure_msl != null ? Math.round(c.pressure_msl) : '--';
 
+    const precip = c.precipitation != null ? c.precipitation : (d?.precipitation_sum?.[0] ?? null);
+    document.getElementById('rain').textContent = precip != null ? precip.toFixed(1) : '--';
+    if (d && d.precipitation_probability_max && d.precipitation_probability_max[0] != null) {
+        document.getElementById('rainProb').textContent = `${d.precipitation_probability_max[0]}%`;
+    } else {
+        document.getElementById('rainProb').textContent = '';
+    }
+
+    const gustSpeed = c.wind_gusts_10m != null ? c.wind_gusts_10m : 0;
+    const gustEl = document.getElementById('windGusts');
+    const gustUnitEl = document.getElementById('windGustsUnit');
+    if (state.unit === 'C') {
+        gustEl.textContent = gustSpeed.toFixed(1);
+        gustUnitEl.textContent = 'm/s';
+    } else {
+        gustEl.textContent = (gustSpeed * 2.237).toFixed(1);
+        gustUnitEl.textContent = 'mph';
+    }
+
+    const dirDeg = c.wind_direction_10m;
+    const dirEl = document.getElementById('windDir');
+    if (dirDeg != null) {
+        const dirs = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
+        const dirIdx = Math.round(dirDeg / 22.5) % 16;
+        const arrow = getWindArrow(dirDeg);
+        dirEl.textContent = `${arrow} ${dirs[dirIdx]} ${dirDeg}°`;
+    } else {
+        dirEl.textContent = '';
+    }
+
     updateWeatherBackground();
     updateClock();
     applyLanguage();
@@ -1399,6 +1431,13 @@ function formatTimeStr(dateStr) {
     if (!dateStr) return '--';
     const d = new Date(dateStr);
     return d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0');
+}
+
+function getWindArrow(deg) {
+    if (deg == null) return '';
+    const arrows = ['↓', '↙', '←', '↖', '↑', '↗', '→', '↘'];
+    const idx = Math.round(deg / 45) % 8;
+    return arrows[idx];
 }
 
 function updateClock() {
@@ -1577,6 +1616,8 @@ function applyLanguage() {
     document.getElementById('lblSunset').textContent = i18n[state.lang].sunset;
     document.getElementById('forecastTitle').textContent = i18n[state.lang].forecastTitle;
     document.getElementById('forecastNote').textContent = i18n[state.lang].forecastNote;
+    document.getElementById('lblRain').textContent = i18n[state.lang].rain;
+    document.getElementById('lblWindGusts').textContent = i18n[state.lang].windGusts;
     document.getElementById('alertsTitle').textContent = i18n[state.lang].alertsTitle;
     const radarTitleEl = document.getElementById('radarTitle');
     if (radarTitleEl) radarTitleEl.textContent = i18n[state.lang].radarTitle;
@@ -1674,7 +1715,7 @@ async function fetchWeatherByCoords(lat, lon, silent) {
 
         if (!state.cityName) state.cityName = `${lat.toFixed(4)}, ${lon.toFixed(4)}`;
 
-    const openMeteoUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,pressure_msl&daily=temperature_2m_max,temperature_2m_min,weather_code,sunrise,sunset&timezone=auto&forecast_days=16`;
+    const openMeteoUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m,precipitation,pressure_msl&daily=temperature_2m_max,temperature_2m_min,weather_code,sunrise,sunset,precipitation_sum,precipitation_probability_max,wind_speed_10m_max,wind_gusts_10m_max&timezone=auto&forecast_days=16`;
     try {
         const omResp = await fetch(openMeteoUrl);
         if (omResp.ok) {

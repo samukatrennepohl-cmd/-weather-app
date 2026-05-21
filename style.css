@@ -401,6 +401,13 @@ body {
     font-weight: 600;
 }
 
+.detail-sub {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 0.25rem;
+    font-weight: 500;
+}
+
 .forecast-display {
     animation: fadeIn 0.6s ease;
 }
