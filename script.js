@@ -735,9 +735,36 @@ const i18nTranslations = {
     },
 };
 
+const i18nWeatherLabels = {
+    pt: { rain: 'Chuva', windGusts: 'Rajadas' },
+    es: { rain: 'Lluvia', windGusts: 'Ráfagas' },
+    fr: { rain: 'Pluie', windGusts: 'Rafales' },
+    de: { rain: 'Regen', windGusts: 'Böen' },
+    it: { rain: 'Pioggia', windGusts: 'Raffiche' },
+    nl: { rain: 'Regen', windGusts: 'Windstoten' },
+    pl: { rain: 'Deszcz', windGusts: 'Porywy' },
+    ru: { rain: 'Дождь', windGusts: 'Порывы' },
+    ja: { rain: '雨', windGusts: '突風' },
+    ko: { rain: '비', windGusts: '돌풍' },
+    zh: { rain: '雨', windGusts: '阵风' },
+    ar: { rain: 'مطر', windGusts: 'هبات رياح' },
+    hi: { rain: 'बारिश', windGusts: 'झोंके' },
+    tr: { rain: 'Yağmur', windGusts: 'Rüzgar Hamleleri' },
+    sv: { rain: 'Regn', windGusts: 'Vindbyar' },
+    da: { rain: 'Regn', windGusts: 'Vindstød' },
+    fi: { rain: 'Sade', windGusts: 'Puuskat' },
+    no: { rain: 'Regn', windGusts: 'Vindkast' },
+    cs: { rain: 'Déšť', windGusts: 'Nárazový vítr' },
+    ro: { rain: 'Ploaie', windGusts: 'Rafale' },
+    el: { rain: 'Βροχή', windGusts: 'Ριπές' },
+    th: { rain: 'ฝน', windGusts: 'ลมกระโชก' },
+    vi: { rain: 'Mưa', windGusts: 'Gió giật' },
+    he: { rain: 'גשם', windGusts: 'משבי רוח' },
+};
+
 const i18n = {};
 for (const code of ['en', ...Object.keys(i18nTranslations)]) {
-    i18n[code] = { ...i18nBase, ...i18nTranslations[code] };
+    i18n[code] = { ...i18nBase, ...i18nWeatherLabels[code], ...i18nTranslations[code] };
 }
 
 const alertEventTranslations = {
