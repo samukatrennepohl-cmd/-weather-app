@@ -1314,33 +1314,27 @@ function renderWeather() {
     document.getElementById('pressure').textContent = c.pressure_msl != null ? Math.round(c.pressure_msl) : '--';
 
     const precip = c.precipitation != null ? c.precipitation : (d?.precipitation_sum?.[0] ?? null);
-    document.getElementById('rain').textContent = precip != null ? precip.toFixed(1) : '--';
+    setText('rain', precip != null ? precip.toFixed(1) : '--');
     if (d && d.precipitation_probability_max && d.precipitation_probability_max[0] != null) {
-        document.getElementById('rainProb').textContent = `${d.precipitation_probability_max[0]}%`;
+        setText('rainProb', `${d.precipitation_probability_max[0]}%`);
     } else {
-        document.getElementById('rainProb').textContent = '';
+        setText('rainProb', '');
     }
 
     const gustSpeed = c.wind_gusts_10m != null ? c.wind_gusts_10m : 0;
-    const gustEl = document.getElementById('windGusts');
-    const gustUnitEl = document.getElementById('windGustsUnit');
-    if (state.unit === 'C') {
-        gustEl.textContent = gustSpeed.toFixed(1);
-        gustUnitEl.textContent = 'm/s';
-    } else {
-        gustEl.textContent = (gustSpeed * 2.237).toFixed(1);
-        gustUnitEl.textContent = 'mph';
-    }
+    const gustVal = state.unit === 'C' ? gustSpeed.toFixed(1) : (gustSpeed * 2.237).toFixed(1);
+    const gustUnit = state.unit === 'C' ? 'm/s' : 'mph';
+    setText('windGusts', gustVal);
+    setText('windGustsUnit', gustUnit);
 
     const dirDeg = c.wind_direction_10m;
-    const dirEl = document.getElementById('windDir');
     if (dirDeg != null) {
         const dirs = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
         const dirIdx = Math.round(dirDeg / 22.5) % 16;
         const arrow = getWindArrow(dirDeg);
-        dirEl.textContent = `${arrow} ${dirs[dirIdx]} ${dirDeg}°`;
+        setText('windDir', `${arrow} ${dirs[dirIdx]} ${dirDeg}°`);
     } else {
-        dirEl.textContent = '';
+        setText('windDir', '');
     }
 
     updateWeatherBackground();
@@ -1607,21 +1601,21 @@ function createParticles() {
 }
 
 function applyLanguage() {
-    document.getElementById('searchInput').placeholder = i18n[state.lang].searchPlaceholder;
-    document.getElementById('lblFeelsLike').textContent = i18n[state.lang].feelsLike;
-    document.getElementById('lblHumidity').textContent = i18n[state.lang].humidity;
-    document.getElementById('lblWind').textContent = i18n[state.lang].wind;
-    document.getElementById('lblPressure').textContent = i18n[state.lang].pressure;
-    document.getElementById('lblSunrise').textContent = i18n[state.lang].sunrise;
-    document.getElementById('lblSunset').textContent = i18n[state.lang].sunset;
-    document.getElementById('forecastTitle').textContent = i18n[state.lang].forecastTitle;
-    document.getElementById('forecastNote').textContent = i18n[state.lang].forecastNote;
-    document.getElementById('lblRain').textContent = i18n[state.lang].rain;
-    document.getElementById('lblWindGusts').textContent = i18n[state.lang].windGusts;
-    document.getElementById('alertsTitle').textContent = i18n[state.lang].alertsTitle;
-    const radarTitleEl = document.getElementById('radarTitle');
-    if (radarTitleEl) radarTitleEl.textContent = i18n[state.lang].radarTitle;
-    document.getElementById('footerPowered').textContent = i18n[state.lang].footer;
+    const t = i18n[state.lang];
+    setPlaceholder('searchInput', t.searchPlaceholder);
+    setText('lblFeelsLike', t.feelsLike);
+    setText('lblHumidity', t.humidity);
+    setText('lblWind', t.wind);
+    setText('lblPressure', t.pressure);
+    setText('lblSunrise', t.sunrise);
+    setText('lblSunset', t.sunset);
+    setText('forecastTitle', t.forecastTitle);
+    setText('forecastNote', t.forecastNote);
+    setText('lblRain', t.rain);
+    setText('lblWindGusts', t.windGusts);
+    setText('alertsTitle', t.alertsTitle);
+    setText('radarTitle', t.radarTitle);
+    setText('footerPowered', t.footer);
 
     if (state.weather) {
         const code = state.weather.current?.weather_code;
@@ -1630,6 +1624,16 @@ function applyLanguage() {
         }
         renderAlerts();
     }
+}
+
+function setText(id, val) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = val;
+}
+
+function setPlaceholder(id, val) {
+    const el = document.getElementById(id);
+    if (el) el.placeholder = val;
 }
 
 function showLoading() {
