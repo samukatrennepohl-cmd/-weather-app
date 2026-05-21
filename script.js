@@ -1653,7 +1653,7 @@ async function reverseGeocode(lat, lon) {
     if (iso) state.stateCode = iso.split('-')[1] || null;
 }
 
-async function fetchWeatherByCoords(lat, lon) {
+async function fetchWeatherByCoords(lat, lon, silent) {
     state.lat = lat;
     state.lon = lon;
 
@@ -1689,7 +1689,7 @@ async function fetchWeatherByCoords(lat, lon) {
     hideLoading();
 
     if (!state.weather || !state.weather.current) {
-        showError(i18n[state.lang].errorGeneric);
+        if (!silent) showError(i18n[state.lang].errorGeneric);
         showWelcome();
         return;
     }
@@ -1727,7 +1727,7 @@ async function fetchLocationByIP() {
                     state.cityName = data.city || '';
                     state.country = (data.country || data.country_code || data.countryCode || '').toUpperCase();
                     state.stateCode = (data.region_code || data.region || '').toUpperCase() || null;
-                    await fetchWeatherByCoords(lat, lon);
+                    await fetchWeatherByCoords(lat, lon, true);
                     return true;
                 }
             }
@@ -1739,7 +1739,7 @@ async function fetchLocationByIP() {
 function getLocation() {
     const geoOptions = { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 };
     const onSuccess = (pos) => {
-        fetchWeatherByCoords(pos.coords.latitude, pos.coords.longitude);
+        fetchWeatherByCoords(pos.coords.latitude, pos.coords.longitude, true);
     };
     const onError = () => {
         hideLoading();
