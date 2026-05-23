@@ -1507,8 +1507,8 @@ async function fetchRadar(lat, lon) {
         const resp = await fetch(`https://api.rainviewer.com/public/weather-maps.json`);
         if (!resp.ok) return;
         const data = await resp.json();
+        if (!data?.radar?.past?.length) return;
         const frames = data.radar.past.slice(-30);
-        const tileSize = 256;
         radarBounds = 7;
         radarTileX = Math.floor((lon + 180) / 360 * Math.pow(2, radarBounds));
         radarTileY = Math.floor((1 - Math.log(Math.tan(lat * Math.PI / 180) + 1 / Math.cos(lat * Math.PI / 180)) / Math.PI) / 2 * Math.pow(2, radarBounds));
@@ -1519,9 +1519,9 @@ async function fetchRadar(lat, lon) {
         radarLoaded = true;
         const canvas = document.getElementById('radarCanvas');
         if (!canvas) return;
-        canvas.width = canvas.offsetWidth;
-        canvas.height = canvas.offsetHeight;
         radarDisplay.classList.remove('hidden');
+        canvas.width = canvas.offsetWidth || canvas.clientWidth || 600;
+        canvas.height = canvas.offsetHeight || canvas.clientHeight || 300;
         radarCurrentFrame = radarFrames.length - 1;
         loadRadarFrame(radarCurrentFrame);
     } catch (e) {
