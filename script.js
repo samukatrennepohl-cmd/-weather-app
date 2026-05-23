@@ -878,12 +878,37 @@ const caProvinces = {
     'northwest territories': 'NT', 'nunavut': 'NU', 'yukon': 'YT',
 };
 
+const auStates = {
+    'new south wales': 'NSW', 'victoria': 'VIC', 'queensland': 'QLD',
+    'western australia': 'WA', 'south australia': 'SA', 'tasmania': 'TAS',
+    'northern territory': 'NT', 'australian capital territory': 'ACT',
+};
+
+const deStates = {
+    'bayern': 'BY', 'nordrhein-westfalen': 'NW',
+    'baden-württemberg': 'BW', 'baden-wuerttemberg': 'BW',
+    'hessen': 'HE', 'niedersachsen': 'NI', 'sachsen': 'SN',
+    'rheinland-pfalz': 'RP', 'berlin': 'BE',
+    'schleswig-holstein': 'SH', 'thüringen': 'TH', 'thueringen': 'TH',
+    'brandenburg': 'BB', 'sachsen-anhalt': 'ST', 'hamburg': 'HH',
+    'mecklenburg-vorpommern': 'MV', 'saarland': 'SL', 'bremen': 'HB',
+};
+
+const regionMaps = [usStates, brStates, caProvinces, auStates, deStates];
+
+// Country aliases for common non-ISO search suffixes (e.g. "UK" → "GB")
+const countryAlias = {
+    'uk': 'GB', 'uae': 'AE',
+};
+
 function extractStateCode(country, admin1) {
     if (!admin1) return null;
     const key = admin1.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
     if (country === 'BR') return brStates[key] || null;
     if (country === 'US') return usStates[key] || null;
     if (country === 'CA') return caProvinces[key] || null;
+    if (country === 'AU') return auStates[key] || null;
+    if (country === 'DE') return deStates[key] || null;
     return null;
 }
 
@@ -1050,27 +1075,23 @@ async function fetchWeather(city) {
             let suffix = null;
             if (commaIdx !== -1) {
                 const s = searchCity.substring(commaIdx + 1).trim();
-                if (/^[A-Z]{2}$/i.test(s)) suffix = s.toUpperCase();
+                if (/^[A-Z]{2,3}$/i.test(s)) suffix = s.toUpperCase();
             }
             if (!suffix) {
-                const m = searchCity.match(/\s+([A-Z]{2})$/);
+                const m = searchCity.match(/\s+([A-Z]{2,3})$/);
                 if (m) suffix = m[1].toUpperCase();
             }
             if (suffix) {
-                for (const [name, abbr] of Object.entries(usStates)) {
-                    if (abbr === suffix) { filterState = suffix; break; }
-                }
-                if (!filterState) {
-                    for (const [name, abbr] of Object.entries(brStates)) {
+                for (const map of regionMaps) {
+                    for (const abbr of Object.values(map)) {
                         if (abbr === suffix) { filterState = suffix; break; }
                     }
+                    if (filterState) break;
                 }
                 if (!filterState) {
-                    for (const [name, abbr] of Object.entries(caProvinces)) {
-                        if (abbr === suffix) { filterState = suffix; break; }
-                    }
+                    const aliased = countryAlias[suffix.toLowerCase()] || null;
+                    filterCountry = aliased || suffix;
                 }
-                if (!filterState) filterCountry = suffix;
             }
         }
 
@@ -1116,11 +1137,13 @@ async function fetchWeather(city) {
                 const stateMatch = results.find(r => {
                     if (!r.admin1) return false;
                     const key = r.admin1.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-                    return (usStates[key] === filterState || brStates[key] === filterState || caProvinces[key] === filterState);
+                    for (const map of regionMaps) {
+                        if (map[key] === filterState) return true;
+                    }
+                    return false;
                 });
                 if (stateMatch) { best = stateMatch; }
                 else {
-                    // Fallback: suffix that looks like a state may be a country ("CA" = Canada, "GA" = Gabon, etc.)
                     const countryMatch = results.find(r => r.country_code && r.country_code.toUpperCase() === filterState);
                     if (countryMatch) best = countryMatch;
                 }
