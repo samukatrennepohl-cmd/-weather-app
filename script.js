@@ -995,11 +995,13 @@ async function fetchWeather(city) {
         hideLoading();
         showWeather();
         showForecast();
+        saveCityToStorage(searchCity);
     } catch (err) {
         console.error(err);
         showError(i18n[state.lang].errorGeneric);
         showWelcome();
         hideLoading();
+        hideSplash();
     }
 }
 
@@ -1761,16 +1763,19 @@ async function fetchWeatherByCoords(lat, lon, silent) {
     hideLoading();
 
     if (!state.weather || !state.weather.current) {
+        hideSplash();
         if (!silent) showError(i18n[state.lang].errorGeneric);
         showWelcome();
         return;
     }
 
+    hideSplash();
     hideWelcome();
     renderWeather();
     renderForecast();
     showWeather();
     showForecast();
+    saveCityToStorage(state.cityName + ', ' + state.country);
 
     if (state.country) await fetchAlerts(lat, lon, state.country, state.cityName);
     await fetchRadar(state.lat, state.lon);
@@ -1805,6 +1810,8 @@ async function fetchLocationByIP() {
             }
         } catch (e) {}
     }
+    hideSplash();
+    showWelcome();
     return false;
 }
 
@@ -1815,6 +1822,7 @@ function getLocation() {
     };
     const onError = () => {
         hideLoading();
+        hideSplash();
         fetchLocationByIP();
     };
 
@@ -1822,6 +1830,7 @@ function getLocation() {
         navigator.geolocation.getCurrentPosition(onSuccess, onError, geoOptions);
     } else {
         hideLoading();
+        hideSplash();
         fetchLocationByIP();
     }
 }
@@ -1858,8 +1867,59 @@ document.querySelectorAll('.unit-btn').forEach(btn => {
     });
 });
 
-showWelcome();
+function hideSplash() {
+    const el = document.getElementById('splashLoading');
+    if (el) el.classList.add('hidden');
+}
+
+function showSplash() {
+    const el = document.getElementById('splashLoading');
+    if (el) el.classList.remove('hidden');
+}
+
+function setSplashStatus(msg) {
+    const el = document.getElementById('splashStatus');
+    if (el) el.textContent = msg;
+}
+
+function saveCityToStorage(city) {
+    if (!city) return;
+    try {
+        localStorage.setItem('weatherAppCity', city);
+        localStorage.setItem('weatherAppUnit', state.unit);
+        localStorage.setItem('weatherAppLang', state.lang);
+    } catch (e) {}
+}
+
+function loadCityFromStorage() {
+    try {
+        const city = localStorage.getItem('weatherAppCity');
+        const unit = localStorage.getItem('weatherAppUnit');
+        const lang = localStorage.getItem('weatherAppLang');
+        if (unit) state.unit = unit;
+        if (lang) state.lang = lang;
+        return city;
+    } catch (e) {
+        return null;
+    }
+}
+
 createParticles();
 updateClock();
 setInterval(updateClock, 1000);
-getLocation();
+
+const savedCity = loadCityFromStorage();
+if (savedCity) {
+    document.getElementById('searchInput').value = savedCity;
+    if (state.lang) document.getElementById('langSelect').value = state.lang;
+    const activeUnit = document.querySelector(`.unit-btn[data-unit="${state.unit}"]`);
+    if (activeUnit) {
+        document.querySelectorAll('.unit-btn').forEach(b => b.classList.remove('active'));
+        activeUnit.classList.add('active');
+    }
+    setSplashStatus(`Loading weather for ${savedCity}...`);
+    fetchWeather(savedCity).finally(hideSplash);
+} else {
+    setSplashStatus('Detecting your location...');
+    getLocation();
+}
