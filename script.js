@@ -870,11 +870,20 @@ const usStates = {
     'west virginia': 'WV', 'wisconsin': 'WI', 'wyoming': 'WY',
 };
 
+const caProvinces = {
+    'alberta': 'AB', 'british columbia': 'BC', 'manitoba': 'MB',
+    'new brunswick': 'NB', 'newfoundland and labrador': 'NL',
+    'nova scotia': 'NS', 'ontario': 'ON', 'prince edward island': 'PE',
+    'quebec': 'QC', 'saskatchewan': 'SK',
+    'northwest territories': 'NT', 'nunavut': 'NU', 'yukon': 'YT',
+};
+
 function extractStateCode(country, admin1) {
     if (!admin1) return null;
     const key = admin1.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
     if (country === 'BR') return brStates[key] || null;
     if (country === 'US') return usStates[key] || null;
+    if (country === 'CA') return caProvinces[key] || null;
     return null;
 }
 
@@ -1051,8 +1060,15 @@ async function fetchWeather(city) {
                 for (const [name, abbr] of Object.entries(usStates)) {
                     if (abbr === suffix) { filterState = suffix; break; }
                 }
-                for (const [name, abbr] of Object.entries(brStates)) {
-                    if (abbr === suffix) { filterState = suffix; break; }
+                if (!filterState) {
+                    for (const [name, abbr] of Object.entries(brStates)) {
+                        if (abbr === suffix) { filterState = suffix; break; }
+                    }
+                }
+                if (!filterState) {
+                    for (const [name, abbr] of Object.entries(caProvinces)) {
+                        if (abbr === suffix) { filterState = suffix; break; }
+                    }
                 }
                 if (!filterState) filterCountry = suffix;
             }
@@ -1100,9 +1116,14 @@ async function fetchWeather(city) {
                 const stateMatch = results.find(r => {
                     if (!r.admin1) return false;
                     const key = r.admin1.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-                    return (usStates[key] === filterState || brStates[key] === filterState);
+                    return (usStates[key] === filterState || brStates[key] === filterState || caProvinces[key] === filterState);
                 });
-                if (stateMatch) best = stateMatch;
+                if (stateMatch) { best = stateMatch; }
+                else {
+                    // Fallback: suffix that looks like a state may be a country ("CA" = Canada, "GA" = Gabon, etc.)
+                    const countryMatch = results.find(r => r.country_code && r.country_code.toUpperCase() === filterState);
+                    if (countryMatch) best = countryMatch;
+                }
             } else if (filterCountry) {
                 const match = results.find(r => r.country_code && r.country_code.toUpperCase() === filterCountry);
                 if (match) best = match;
