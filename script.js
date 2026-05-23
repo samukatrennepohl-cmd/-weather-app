@@ -1032,6 +1032,32 @@ async function fetchWeather(city) {
 
     try {
         let searchCity = city.trim();
+
+        // Extract state/country suffix from raw input before normalization strips it
+        let filterState = null;
+        let filterCountry = null;
+        {
+            const commaIdx = searchCity.lastIndexOf(',');
+            let suffix = null;
+            if (commaIdx !== -1) {
+                const s = searchCity.substring(commaIdx + 1).trim();
+                if (/^[A-Z]{2}$/i.test(s)) suffix = s.toUpperCase();
+            }
+            if (!suffix) {
+                const m = searchCity.match(/\s+([A-Z]{2})$/);
+                if (m) suffix = m[1].toUpperCase();
+            }
+            if (suffix) {
+                for (const [name, abbr] of Object.entries(usStates)) {
+                    if (abbr === suffix) { filterState = suffix; break; }
+                }
+                for (const [name, abbr] of Object.entries(brStates)) {
+                    if (abbr === suffix) { filterState = suffix; break; }
+                }
+                if (!filterState) filterCountry = suffix;
+            }
+        }
+
         searchCity = searchCity.split(',')[0].trim();
         searchCity = searchCity.replace(/\s+[A-Z]{2,3}$/i, '').trim();
 
@@ -1067,6 +1093,19 @@ async function fetchWeather(city) {
             } else if (results.length > 1) {
                 const preferred = results.find(r => r.country_code && (r.country_code.toUpperCase() === 'US' || r.country_code.toUpperCase() === 'BR'));
                 if (preferred) best = preferred;
+            }
+
+            // Filter by state/country suffix from raw input (e.g. "Springfield, IL")
+            if (filterState) {
+                const stateMatch = results.find(r => {
+                    if (!r.admin1) return false;
+                    const key = r.admin1.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                    return (usStates[key] === filterState || brStates[key] === filterState);
+                });
+                if (stateMatch) best = stateMatch;
+            } else if (filterCountry) {
+                const match = results.find(r => r.country_code && r.country_code.toUpperCase() === filterCountry);
+                if (match) best = match;
             }
 
             state.lat = best.latitude;
