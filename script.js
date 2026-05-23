@@ -989,13 +989,13 @@ async function fetchWeather(city) {
         renderWeather();
         renderForecast();
 
-        await fetchAlerts(state.lat, state.lon, state.country, state.cityName);
-        await fetchRadar(state.lat, state.lon);
-
         hideLoading();
         showWeather();
         showForecast();
         saveCityToStorage(searchCity);
+
+        fetchAlerts(state.lat, state.lon, state.country, state.cityName);
+        fetchRadar(state.lat, state.lon);
     } catch (err) {
         console.error(err);
         showError(i18n[state.lang].errorGeneric);
